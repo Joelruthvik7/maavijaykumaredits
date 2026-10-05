@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-[#070708] text-[#F4F4F6]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHINTHALA VIJAY KUMAR — ENTER THE EDIT</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void: '#070708',
+            suite: '#0E0F12',
+            track: '#18191E',
+            timecode: '#6B6D76',
+            coldprint: '#D4D5DC',
+            emulsion: '#F4F4F6',
+            rec: '#E54833',
+          },
+          fontFamily: {
+            title: ['Cinzel', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          transitionTimingFunction: {
+            'expo-out': 'cubic-bezier(0.16, 1, 0.3, 1)',
+            'cut': 'steps(1, end)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Baseline CSS resets and film grain simulation */
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: #E54833;
+      color: #070708;
+    }
+
+    /* Subtle 35mm Emulsion Grain Overlay */
+    .film-grain {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      width: 200%;
+      height: 200vh;
+      background: transparent url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.045"/></svg>') repeat;
+      pointer-events: none;
+      z-index: 9990;
+      opacity: 0.65;
+    }
+
+    /* Cinematic Cut-Mask Text Utility */
+    .mask-reveal {
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: bottom;
+    }
+    
+    .mask-reveal-inner {
+      transform: translateY(115%);
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+    }
+
+    .revealed .mask-reveal-inner {
+      transform: translateY(0%);
+    }
+
+    /* Viewfinder Custom Reticle */
+    #cursor-reticle {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      transition: width 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+                  height 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  background-color 0.2s ease,
+                  border-color 0.2s ease;
+    }
+
+    /* Anamorphic aspect ratio lock */
+    .aspect-anamorphic {
+      aspect-ratio: 2.39 / 1;
+    }
+
+    /* Respect Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .mask-reveal-inner {
+        transform: translateY(0%) !important;
+        transition: none !important;
+      }
+      * {
+        animation-duration: 0.001s !important;
+        transition-duration: 0.001s !important;
+      }
+      .film-grain {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body class="bg-void text-coldprint font-sans selection:bg-rec selection:text-void overflow-x-hidden relative">
+
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- Viewfinder Reticle (Desktop) -->
+  <div id="cursor-reticle" class="hidden md:flex items-center justify-center rounded-none w-5 h-5 border border-white/40 pointer-events-none transition-all duration-150">
+    <div id="reticle-dot" class="w-1 h-1 bg-emulsion transition-transform duration-150"></div>
+    <span id="reticle-label" class="opacity-0 font-mono text-[9px] tracking-widest text-void font-bold uppercase transition-opacity duration-150 whitespace-nowrap"></span>
+  </div>
+
+  <!-- 01 GLOBAL HUD: TOP BAR -->
+  <header class="fixed top-0 left-0 right-0 h-12 z-50 bg-[#070708]/90 backdrop-blur-md border-b border-white/[0.08] px-4 md:px-8 flex items-center justify-between font-mono text-xs tracking-wider">
+    <!-- Studio Status & Identification -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <span id="rec-dot" class="w-2.5 h-2.5 rounded-full bg-rec inline-block transition-opacity duration-700 opacity-90"></span>
+        <span class="text-emulsion tracking-widest font-semibold text-[11px]">[REC]</span>
+      </div>
+      <div class="hidden sm:block h-3 w-[1px] bg-white/20"></div>
+      <span class="text-emulsion font-sans text-xs uppercase tracking-widest font-medium hidden sm:inline-block">CHINTHALA VIJAY KUMAR</span>
+    </div>
+
+    <!-- Center Track / Status Indicator -->
+    <div class="hidden lg:flex items-center gap-3 text-timecode text-[11px]">
+      <span class="text-white/40 font-mono">WORKSPACE:</span>
+      <span class="text-coldprint">POST-PRODUCTION SUITE</span>
+      <span class="text-white/20">/</span>
+      <span class="text-white/40 font-mono">DCI-P3 24FPS</span>
+    </div>
+
+    <!-- Live Deterministic Scroll Timecode & Menu CTA -->
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-white/40 text-[10px]">TC</span>
+        <span id="hud-timecode" class="text-emulsion font-mono font-medium tracking-widest text-[12px]">00:00:01:00</span>
+      </div>
+      <button id="nav-btn" class="border border-white/20 px-2.5 py-1 text-[11px] text-coldprint hover:text-emulsion hover:border-white/60 transition uppercase cursor-pointer" data-cursor="MENU">
+        INDEX
+      </button>
+    </div>
+  </header>
+
+  <!-- SLIDE-OUT SCENE INDEX DRAWER -->
+  <div id="nav-drawer" class="fixed inset-0 z-40 bg-void/98 backdrop-blur-xl -translate-y-full transition-transform duration-500 ease-expo-out flex flex-col justify-between p-8 md:p-16 border-b border-white/10" aria-hidden="true">
+    <div class="flex justify-between items-center border-b border-white/10 pb-6">
+      <div class="font-mono text-xs text-timecode tracking-widest">[REEL SEQUENCE INDEX]</div>
+      <button id="nav-close-btn" class="font-mono text-xs text-coldprint hover:text-emulsion uppercase p-2" data-cursor="CLOSE">✕ CLOSE</button>
+    </div>
+    
+    <nav class="my-auto grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full mx-auto">
+      <div>
+        <span class="font-mono text-xs text-rec uppercase tracking-widest mb-4 block">// PRIMARY REELS</span>
+        <ul class="space-y-4 font-title text-2xl md:text-4xl text-coldprint">
+          <li>
+            <a href="#hero-sequence" class="nav-link hover:text-emulsion hover:pl-3 transition-all flex items-center gap-4" data-cursor="JUMP">
+              <span class="font-mono text-xs text-white/30">01</span>
+              <span>HOME / ENTER THE EDIT</span>
+            </a>
+          </li>
+          <li>
+            <a href="#craft-sequence" class="nav-link hover:text-emulsion hover:pl-3 transition-all flex items-center gap-4" data-cursor="JUMP">
+              <span class="font-mono text-xs text-white/30">02</span>
+              <span>THE CRAFT & PHILOSOPHY</span>
+            </a>
+          </li>
+          <li>
+            <a href="#selected-work" class="nav-link hover:text-emulsion hover:pl-3 transition-all flex items-center gap-4" data-cursor="JUMP">
+              <span class="font-mono text-xs text-white/30">03</span>
+              <span>SELECTED WORK</span>
+            </a>
+          </li>
+          <li>
+            <a href="#career-teaser" class="nav-link hover:text-emulsion hover:pl-3 transition-all flex items-center gap-4" data-cursor="JUMP">
+              <span class="font-mono text-xs text-white/30">04</span>
+              <span>JOURNEY / TIMELINE</span>
+            </a>
+          </li>
+          <li>
+            <a href="#contact-sequence" class="nav-link hover:text-emulsion hover:pl-3 transition-all flex items-center gap-4" data-cursor="JUMP">
+              <span class="font-mono text-xs text-white/30">05</span>
+              <span>CONTACT / COLLABORATION</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-10 flex flex-col justify-between font-mono text-xs text-timecode space-y-6">
+        <div>
+          <span class="text-white/40 block mb-2 uppercase tracking-widest">// STUDIO SPEC</span>
+          <p class="text-coldprint leading-relaxed">
+            CHINTHALA VIJAY KUMAR<br>
+            SENIOR VIDEO EDITOR & CINEMATOGRAPHER<br>
+            HYDERABAD, TELANGANA, INDIA<br>
+            AFFILIATION: INFINITUM NETWORK SOLUTIONS
+          </p>
+        </div>
+        <div>
+          <span class="text-white/40 block mb-2 uppercase tracking-widest">// DIRECT ACCESS</span>
+          <a href="mailto:chinthalavk040@gmail.com" class="text-emulsion text-sm underline underline-offset-4 hover:text-rec transition">
+            chinthalavk040@gmail.com
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="border-t border-white/10 pt-4 flex justify-between font-mono text-[10px] text-timecode">
+      <span>CHAPTER 01: HOME SEQUENCE</span>
+      <span>SYSTEM READY</span>
+    </div>
+  </div>
+
+  <main class="w-full">
+    <!-- SCENE 00 - 04: THE OPENING FRAME & TITLE REVEAL -->
+    <section id="hero-sequence" class="relative min-h-screen w-full flex flex-col justify-between px-4 sm:px-8 md:px-16 pt-24 pb-16 overflow-hidden">
+      <!-- Technical Metatags -->
+      <div class="w-full flex items-center justify-between border-b border-white/[0.08] pb-4 font-mono text-[11px] text-timecode">
+        <div class="flex items-center gap-4">
+          <span class="text-rec font-bold">SEQ_01</span>
+          <span>SCENE 01 / TAKE 01</span>
+          <span class="hidden sm:inline-block text-white/20">|</span>
+          <span class="hidden sm:inline-block">24.00 FPS MONOCHROME GATE</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span>PROJECT: VIJAY_KUMAR_REEL</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
+        </div>
+      </div>
+
+      <!-- Monumental Masked Title Sequence -->
+      <div id="hero-title-container" class="my-auto py-12 md:py-20 flex flex-col">
+        <!-- Mask 1: CHINTHALA -->
+        <div class="mask-reveal">
+          <h1 class="mask-reveal-inner font-title text-[14vw] sm:text-[13vw] lg:text-[12vw] leading-[0.88] uppercase text-emulsion tracking-[-0.03em] font-black select-none">
+            CHINTHALA
+          </h1>
+        </div>
+        <!-- Mask 2: VIJAY KUMAR -->
+        <div class="mask-reveal">
+          <h1 class="mask-reveal-inner font-title text-[14vw] sm:text-[13vw] lg:text-[12vw] leading-[0.88] uppercase text-coldprint tracking-[-0.03em] font-black select-none">
+            VIJAY KUMAR
+          </h1>
+        </div>
+
+        <!-- Cut-Line Baseline Divider -->
+        <div id="hero-baseline" class="w-0 h-[1px] bg-white/30 my-6 md:my-8 transition-all duration-1000 ease-expo-out"></div>
+
+        <!-- Technical Metadata Attachment (Scene 04) -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs md:text-sm text-coldprint tracking-wider">
+          <div class="flex flex-wrap items-center gap-3 md:gap-6">
+            <span class="text-emulsion font-bold bg-white/10 px-2 py-0.5 rounded-none text-xs">VIDEO EDITOR</span>
+            <span class="text-white/40">/</span>
+            <span class="text-emulsion font-medium">CINEMATOGRAPHER</span>
+            <span class="text-white/40">/</span>
+            <span class="text-timecode">HYDERABAD, INDIA</span>
+          </div>
+          <div class="text-timecode text-xs">
+            ROLE: LEAD POST-PRODUCTION & CAMERA
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Invitation Indicator -->
+      <div class="w-full flex items-center justify-between border-t border-white/[0.08] pt-4 font-mono text-xs text-timecode">
+        <div class="flex items-center gap-2">
+          <span class="animate-pulse text-rec">▼</span>
+          <span class="tracking-widest uppercase text-[11px]">SCROLL TO ADVANCE TIMELINE</span>
+        </div>
+        <div class="font-mono text-[11px] text-white/40">
+          FRAME: [0001 / 8640]
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 05 - 07: THE FIRST VISUAL FRAME & EDITORIAL STATEMENT -->
+    <section id="first-frame-scene" class="relative w-full py-20 px-4 sm:px-8 md:px-16 border-t border-white/[0.08] bg-suite">
+      <div class="max-w-7xl mx-auto">
+        <!-- Frame Metadata Header -->
+        <div class="flex items-center justify-between mb-4 font-mono text-[11px] text-timecode">
+          <div class="flex items-center gap-3">
+            <span class="text-white/80 font-bold">[FRAME 01]</span>
+            <span>RATIO: 2.39:1 CINEMASCOPE</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span>OPTICAL SHUTTER: 180°</span>
+            <span class="text-rec font-semibold">● ACTIVE CUT</span>
+          </div>
+        </div>
+
+        <!-- 2.39:1 Anamorphic Frame Container with Optical Push -->
+        <div class="relative w-full aspect-anamorphic bg-black overflow-hidden border border-white/10 group cursor-pointer" data-cursor="VIEW FRAME">
+          <!-- Vignette & Lens Distortion Simulation -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 z-10 pointer-events-none"></div>
+          
+          <!-- Cinematic Key Visual: High-production atmospheric visual still -->
+          <img 
+            src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=2000&q=85" 
+            alt="Cinematic frame capture in editing room" 
+            class="w-full h-full object-cover object-center filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-1000 ease-expo-out"
+            loading="lazy"
+            onerror="this.src='https://placehold.co/1920x800/0E0F12/D4D5DC?text=CINEMATIC+FRAME+STILL'"
+          />
+
+          <!-- Viewfinder Overlay Elements -->
+          <div class="absolute top-4 left-4 z-20 font-mono text-[10px] text-white/70 tracking-widest bg-black/60 px-2 py-1 border border-white/10">
+            ISO 800 · 35MM T1.5 · RAW LOG
+          </div>
+          <div class="absolute bottom-4 right-4 z-20 font-mono text-[10px] text-white/70 tracking-widest bg-black/60 px-2 py-1 border border-white/10">
+            SEQUENCE 01 — TIMELINE SCRUB
+          </div>
+
+          <!-- Crosshairs -->
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-30">
+            <div class="w-8 h-[1px] bg-white"></div>
+            <div class="h-8 w-[1px] bg-white absolute"></div>
+          </div>
+        </div>
+
+        <!-- Editorial Positioning Statement (Scene 07) -->
+        <div class="mt-16 md:mt-24 max-w-4xl">
+          <span class="font-mono text-xs text-rec uppercase tracking-widest mb-3 block">// STATEMENT 01</span>
+          <p class="font-title text-2xl sm:text-4xl md:text-5xl leading-tight text-emulsion tracking-tight font-medium">
+            "Transforming raw footage into compelling visual stories."
+          </p>
+          <div class="mt-6 flex items-center gap-4 text-xs font-mono text-timecode">
+            <span>RHYTHM</span>
+            <span>·</span>
+            <span>PACING</span>
+            <span>·</span>
+            <span>NARRATIVE ARC</span>
+            <span>·</span>
+            <span>EMOTIONAL PERSPECTIVE</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 08: THE CRAFT (MONUMENTAL TYPOGRAPHIC SEQUENCE) -->
+    <section id="craft-sequence" class="relative w-full py-28 md:py-40 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08] overflow-hidden">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-16 font-mono text-xs text-timecode">
+          <span>// DISCIPLINE MATRIX</span>
+          <span>POST-PRODUCTION / DIRECTION OF PHOTOGRAPHY</span>
+        </div>
+
+        <!-- Asymmetric Staggered Typographic Grid -->
+        <div class="space-y-4 md:space-y-2">
+          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors">
+            <h2 class="font-title text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-emulsion tracking-tighter uppercase" data-cursor="DISCIPLINE">
+              VIDEO
+            </h2>
+            <span class="font-mono text-xs sm:text-sm text-timecode tracking-widest md:text-right mt-2 md:mt-0">
+              01 / PACING, TEMPO, SEAMLESS CUTTING
+            </span>
+          </div>
+
+          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors">
+            <h2 class="font-title text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-coldprint tracking-tighter uppercase ml-0 md:ml-12" data-cursor="DISCIPLINE">
+              EDITING
+            </h2>
+            <span class="font-mono text-xs sm:text-sm text-timecode tracking-widest md:text-right mt-2 md:mt-0">
+              02 / COLOR HARMONY & AUDIO DESIGN
+            </span>
+          </div>
+
+          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors">
+            <h2 class="font-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-emulsion tracking-tighter uppercase" data-cursor="DISCIPLINE">
+              CINEMATOGRAPHY
+            </h2>
+            <span class="font-mono text-xs sm:text-sm text-timecode tracking-widest md:text-right mt-2 md:mt-0">
+              03 / LIGHTING, CAMERA MOVEMENT, OPTICS
+            </span>
+          </div>
+
+          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors">
+            <h2 class="font-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-coldprint tracking-tighter uppercase ml-0 md:ml-20" data-cursor="DISCIPLINE">
+              STORYTELLING
+            </h2>
+            <span class="font-mono text-xs sm:text-sm text-timecode tracking-widest md:text-right mt-2 md:mt-0">
+              04 / EMOTION, TIMING & AUDIENCE RETENTION
+            </span>
+          </div>
+        </div>
+
+        <!-- Editorial Statement (Scene 13) -->
+        <div class="mt-20 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <div class="md:col-span-4 font-mono text-xs text-rec uppercase tracking-widest">
+            // EDITORIAL INTEGRITY
+          </div>
+          <div class="md:col-span-8">
+            <p class="font-sans text-lg sm:text-2xl text-coldprint font-light leading-relaxed">
+              "Transforming raw footage into visually compelling stories while preserving emotion, rhythm, and personality."
+            </p>
+            <div class="mt-8 flex items-center gap-6 font-mono text-xs text-timecode">
+              <span>TOOLSETS: PREMIERE PRO</span>
+              <span>·</span>
+              <span>AFTER EFFECTS</span>
+              <span>·</span>
+              <span>DAVINCI RESOLVE</span>
+              <span>·</span>
+              <span>CINEMA RIGS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 09 - 11: SELECTED WORK (CURATED PRODUCTION REELS) -->
+    <section id="selected-work" class="relative w-full py-28 px-4 sm:px-8 md:px-16 bg-suite border-t border-white/[0.08]">
+      <div class="max-w-7xl mx-auto">
+        
+        <!-- Section Header Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-16 gap-4">
+          <div>
+            <span class="font-mono text-xs text-rec uppercase tracking-widest block mb-1">// REEL ARCHIVE</span>
+            <h3 class="font-title text-3xl sm:text-5xl font-black text-emulsion uppercase tracking-tight">SELECTED WORK</h3>
+          </div>
+          <div class="font-mono text-xs text-timecode flex items-center gap-3">
+            <span>CURATED PORTFOLIO</span>
+            <span class="text-white/20">/</span>
+            <span>CLICK TO ENTER THEATRE</span>
+          </div>
+        </div>
+
+        <!-- PRIMARY FEATURED PROJECT (Dominant Visual Footprint) -->
+        <div class="mb-20">
+          <div class="flex items-center justify-between mb-3 font-mono text-xs text-timecode">
+            <span class="text-emulsion font-bold">[PRIMARY FEATURE 01]</span>
+            <span>ORIGINAL BROADCAST / 4K</span>
+          </div>
+
+          <!-- Primary Project Card -->
+          <article 
+            class="relative w-full bg-void border border-white/10 overflow-hidden group cursor-pointer transition-all duration-300 hover:border-white/40"
+            data-video-id="dQw4w9WgXcQ"
+            data-video-title="KIRAK PILLA — EPISODIC WEB DRAMA"
+            data-video-creator="Kirak Pilla / Infinitum"
+            data-video-year="2024"
+            data-cursor="PLAY REEL"
+            onclick="openVideoModal(this)"
+          >
+            <!-- 16:9 / 2.39:1 Responsive Frame Canvas -->
+            <div class="relative w-full aspect-video md:aspect-anamorphic overflow-hidden bg-black">
+              <img 
+                src="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1800&q=85" 
+                alt="Kirak Pilla Episodic Series Cover" 
+                class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition-transform duration-700 ease-expo-out"
+                loading="lazy"
+                onerror="this.src='https://placehold.co/1920x1080/18191E/D4D5DC?text=FEATURED+PRODUCTION+STILL'"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-void/30 to-transparent"></div>
+
+              <!-- Reticle Play Overlay Button -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-16 h-16 md:w-20 md:h-20 border border-white/40 bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:border-rec group-hover:scale-110">
+                  <div class="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-12 border-l-emulsion group-hover:border-l-rec transition-colors ml-1"></div>
+                </div>
+              </div>
+
+              <!-- Corner Metadata Pins -->
+              <div class="absolute top-4 left-4 font-mono text-[10px] text-white/80 bg-void/80 px-2 py-1 border border-white/10 uppercase">
+                Tamada / Infinitum Lineage
+              </div>
+              <div class="absolute top-4 right-4 font-mono text-[10px] text-rec bg-void/80 px-2 py-1 border border-white/10 uppercase font-semibold">
+                ● WATCH MASTER
+              </div>
+            </div>
+
+            <!-- Card Bottom Metadata -->
+            <div class="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-white/[0.08]">
+              <div>
+                <div class="flex items-center gap-3 font-mono text-xs text-timecode mb-2">
+                  <span class="text-rec font-semibold">FEATURED REEL</span>
+                  <span>·</span>
+                  <span>CREATOR: KIRAK PILLA</span>
+                  <span>·</span>
+                  <span>ROLE: LEAD VIDEO EDITOR</span>
+                </div>
+                <h4 class="font-title text-2xl sm:text-3xl text-emulsion uppercase font-bold tracking-tight">
+                  KIRAK PILLA — NARRATIVE WEB SERIES & PACING
+                </h4>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <span class="font-mono text-xs text-coldprint tracking-widest border border-white/20 px-3 py-1.5 uppercase group-hover:border-white/80 transition">
+                  EXPAND CUT →
+                </span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- SECONDARY FEATURES: TWO-COLUMN ASYMMETRICAL EDITORIAL GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          
+          <!-- Secondary Project 01 -->
+          <article 
+            class="bg-void border border-white/10 overflow-hidden group cursor-pointer hover:border-white/40 transition-all"
+            data-video-id="L_LUpnjgPso"
+            data-video-title="VARSHA D'SOUZA — CINEMATIC VLOGS & STORIES"
+            data-video-creator="Varsha D'Souza / Infinitum"
+            data-video-year="2023-2024"
+            data-cursor="PLAY"
+            onclick="openVideoModal(this)"
+          >
+            <div class="relative w-full aspect-video overflow-hidden bg-black">
+              <img 
+                src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1000&q=80" 
+                alt="Varsha D'Souza Project Still" 
+                class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700 ease-expo-out"
+                loading="lazy"
+                onerror="this.src='https://placehold.co/1280x720/18191E/D4D5DC?text=VARSHA+DSOUZA+SERIES'"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-transparent to-transparent"></div>
+              <div class="absolute top-3 left-3 font-mono text-[9px] text-white/70 bg-black/70 px-2 py-0.5 border border-white/10 uppercase">
+                CREATOR: VARSHA D'SOUZA
+              </div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-12 h-12 border border-white/30 bg-black/60 flex items-center justify-center group-hover:border-rec transition">
+                  <div class="w-0 h-0 border-t-6 border-t-transparent border-b-6 border-b-transparent border-l-8 border-l-emulsion ml-0.5"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5 border-t border-white/[0.08]">
+              <div class="font-mono text-[10px] text-timecode mb-1 uppercase tracking-wider">
+                CH_02 // COMMERCIAL NARRATIVE & PACING
+              </div>
+              <h5 class="font-title text-xl text-emulsion uppercase font-bold tracking-tight mb-2">
+                VARSHA D'SOUZA — CINEMATIC REELS
+              </h5>
+              <p class="font-sans text-xs text-coldprint leading-relaxed">
+                Color grading, music sync, dynamic transition mapping, and episodic continuity editing.
+              </p>
+            </div>
+          </article>
+
+          <!-- Secondary Project 02 -->
+          <article 
+            class="bg-void border border-white/10 overflow-hidden group cursor-pointer hover:border-white/40 transition-all"
+            data-video-id="e-ORhEE9VVg"
+            data-video-title="SHEETAL GAUTHAM & SUSHMA GOPAL — BRAND STORIES"
+            data-video-creator="Sheetal Gautham & Sushma Gopal"
+            data-video-year="2023"
+            data-cursor="PLAY"
+            onclick="openVideoModal(this)"
+          >
+            <div class="relative w-full aspect-video overflow-hidden bg-black">
+              <img 
+                src="https://images.unsplash.com/photo-1518173946687-a4c8a383392e?auto=format&fit=crop&w=1000&q=80" 
+                alt="Sheetal Gautham production still" 
+                class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700 ease-expo-out"
+                loading="lazy"
+                onerror="this.src='https://placehold.co/1280x720/18191E/D4D5DC?text=SHEETAL+GAUTHAM+STILL'"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-transparent to-transparent"></div>
+              <div class="absolute top-3 left-3 font-mono text-[9px] text-white/70 bg-black/70 px-2 py-0.5 border border-white/10 uppercase">
+                CREATOR: SHEETAL GAUTHAM / SUSHMA GOPAL
+              </div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-12 h-12 border border-white/30 bg-black/60 flex items-center justify-center group-hover:border-rec transition">
+                  <div class="w-0 h-0 border-t-6 border-t-transparent border-b-6 border-b-transparent border-l-8 border-l-emulsion ml-0.5"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5 border-t border-white/[0.08]">
+              <div class="font-mono text-[10px] text-timecode mb-1 uppercase tracking-wider">
+                CH_03 // LIFESTYLE & BRAND COLLABORATIONS
+              </div>
+              <h5 class="font-title text-xl text-emulsion uppercase font-bold tracking-tight mb-2">
+                CREATOR HIGHLIGHT ARCHIVE
+              </h5>
+              <p class="font-sans text-xs text-coldprint leading-relaxed">
+                High-energy cuts, sound design pacing, and visual storytelling curated for YouTube & digital media.
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <!-- Creator Collaboration Mention Bar (Scene 19) -->
+        <div class="mt-14 border border-white/[0.08] p-6 bg-void/50 flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs">
+          <div class="text-timecode">
+            <span class="text-rec font-semibold">// CREDITED CHANNELS & TALENT:</span>
+            <span class="text-coldprint ml-2">Sheetal Gautham · Sushma Gopal · Chandoo Gadu · Don Pruthvi · Varsha D'Souza · Kirak Pilla</span>
+          </div>
+          <a href="#work-archive" class="inline-flex items-center gap-2 text-emulsion hover:text-rec uppercase tracking-wider font-semibold" data-cursor="VIEW ALL">
+            <span>VIEW COMPLETE WORK ARCHIVE</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 12: CINEMATIC PAUSE (DELIBERATE RESTRAINT) -->
+    <section class="relative w-full py-36 md:py-48 px-4 sm:px-8 md:px-16 bg-void flex items-center justify-center text-center overflow-hidden border-t border-white/[0.08]">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <span class="font-mono text-xs text-white/30 uppercase tracking-[0.3em] block">[INTERMISSION — ZERO FRAME]</span>
+        <h3 class="font-title text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-emulsion uppercase leading-none select-none">
+          EVERY FRAME<br>HAS A PURPOSE.
+        </h3>
+        <p class="font-mono text-xs text-timecode tracking-widest max-w-md mx-auto pt-4">
+          A cut is not merely an ellipsis. It is the exact threshold where emotion is transferred from the screen to the mind.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCENE 13: EXPERIENCE TEASER (THE PHYSICAL JOURNEY) -->
+    <section id="career-teaser" class="relative w-full py-24 px-4 sm:px-8 md:px-16 bg-suite border-t border-white/[0.08]">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-16 font-mono text-xs text-timecode">
+          <span>// PRODUCTION LINEAGE</span>
+          <span>CAREER TRACK RECORD</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+          <div>
+            <span class="font-mono text-xs text-rec uppercase tracking-widest block mb-2">// THE MILESTONES</span>
+            <h4 class="font-title text-3xl sm:text-4xl font-bold text-emulsion uppercase tracking-tight mb-6">
+              GROUNDED IN CELLULOID, BUILT FOR DIGITAL.
+            </h4>
+            <p class="font-sans text-sm text-coldprint leading-relaxed max-w-md">
+              From academic training in cinematography at the Government Film and Television Institute to high-volume episodic editorial direction for major digital production houses.
+            </p>
+          </div>
+
+          <!-- Milestones Visual Track -->
+          <div class="space-y-8 font-mono text-xs border-l border-white/15 pl-6 md:pl-8">
+            <!-- 2021 - Present -->
+            <div class="relative group">
+              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-rec rounded-none"></div>
+              <span class="text-rec font-bold">2021 — PRESENT</span>
+              <h5 class="font-sans text-lg font-bold text-emulsion uppercase tracking-wide mt-1">INFINITUM NETWORK SOLUTIONS</h5>
+              <p class="text-coldprint mt-1">Lead Video Editor — Digital Series, Branded Content, High-Retention Narrative Edits.</p>
+            </div>
+
+            <!-- 2019 - 2021 -->
+            <div class="relative group">
+              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/40 rounded-none"></div>
+              <span class="text-timecode font-bold">2019 — 2021</span>
+              <h5 class="font-sans text-lg font-bold text-emulsion uppercase tracking-wide mt-1">TAMADA MEDIA</h5>
+              <p class="text-coldprint mt-1">Assistant & Director of Photography (DOP) — Sets, Lighting Rigs, Camera Operation & Assembly Edits.</p>
+            </div>
+
+            <!-- 2016 - 2019 -->
+            <div class="relative group">
+              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/20 rounded-none"></div>
+              <span class="text-timecode font-bold">2016 — 2019</span>
+              <h5 class="font-sans text-lg font-bold text-emulsion uppercase tracking-wide mt-1">GOVERNMENT FILM AND TELEVISION INSTITUTE</h5>
+              <p class="text-coldprint mt-1">Specialization: Cinematography & Visual Composition.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 14 - 15: SECOND CINEMATIC FRAME & WHY THE WORK MATTERS -->
+    <section class="relative w-full py-24 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08]">
+      <div class="max-w-7xl mx-auto">
+        <!-- Second Visual Frame in Full Bleed Width -->
+        <div class="relative w-full aspect-[21/9] bg-black overflow-hidden border border-white/10 group cursor-pointer" data-cursor="OBSERVE">
+          <img 
+            src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&q=85" 
+            alt="Film production lighting and cinema rig" 
+            class="w-full h-full object-cover filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-1000 ease-expo-out"
+            loading="lazy"
+            onerror="this.src='https://placehold.co/1920x820/070708/D4D5DC?text=CINEMATOGRAPHY+RIG+STILL'"
+          />
+          <div class="absolute inset-0 bg-gradient-to-r from-void via-transparent to-void/70 pointer-events-none"></div>
+          
+          <div class="absolute bottom-4 left-4 font-mono text-[10px] text-white/80 bg-void/80 px-2 py-1 border border-white/10 uppercase">
+            FRAME 02 — THE CINEMATIC CAMERA CRAFT
+          </div>
+        </div>
+
+        <!-- Why the Work Matters Editorial Narrative -->
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-white/[0.08] pt-12">
+          <div>
+            <span class="font-mono text-xs text-rec uppercase tracking-wider block mb-2">01 / RHYTHM & TEMPO</span>
+            <p class="font-sans text-xs sm:text-sm text-coldprint leading-relaxed">
+              Every cut is timed to subconscious heartbeat rhythms. An editor controls how fast the viewer breathes.
+            </p>
+          </div>
+          <div>
+            <span class="font-mono text-xs text-rec uppercase tracking-wider block mb-2">02 / LIGHT & COMPOSITION</span>
+            <p class="font-sans text-xs sm:text-sm text-coldprint leading-relaxed">
+              Trained through formal cinematography: framing, focal depth, color science, and dynamic range are treated with surgical intent.
+            </p>
+          </div>
+          <div>
+            <span class="font-mono text-xs text-rec uppercase tracking-wider block mb-2">03 / STORY OVER NOISE</span>
+            <p class="font-sans text-xs sm:text-sm text-coldprint leading-relaxed">
+              No gratuitous transitions or empty effects. Precision edits that elevate human performance and authentic character arcs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 16 - 17: FINAL HOME SEQUENCE & DIRECT CTA -->
+    <section id="contact-sequence" class="relative w-full py-32 md:py-44 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08] flex flex-col justify-between">
+      <div class="max-w-7xl mx-auto w-full">
+        <!-- Sequence Outro Head -->
+        <div class="font-mono text-xs text-timecode flex items-center justify-between border-b border-white/10 pb-4 mb-16">
+          <div class="flex items-center gap-2">
+            <span class="text-rec font-bold">SEQ_OUTRO</span>
+            <span>·</span>
+            <span>END OF REEL 01</span>
+          </div>
+          <span>CUT TO BLACK IMMINENT</span>
+        </div>
+
+        <!-- The Closing Statement & Invocation -->
+        <div class="max-w-4xl space-y-8">
+          <span class="font-mono text-xs text-rec uppercase tracking-widest block">// NEXT SEQUENCE</span>
+          <h2 class="font-title text-4xl sm:text-6xl md:text-8xl font-black text-emulsion uppercase tracking-tight leading-[0.95]">
+            START THE NEXT PROJECT.
+          </h2>
+          <p class="font-sans text-base sm:text-xl text-coldprint max-w-2xl font-light leading-relaxed">
+            Have a story, episodic series, commercial campaign, channel, film, or visual project in mind? Let's enter the edit.
+          </p>
+
+          <!-- Direct Actions -->
+          <div class="pt-6 flex flex-wrap items-center gap-6">
+            <a 
+              href="mailto:chinthalavk040@gmail.com" 
+              class="bg-emulsion text-void px-8 py-4 font-mono text-xs font-bold tracking-widest uppercase hover:bg-rec hover:text-emulsion transition-colors inline-block"
+              data-cursor="CONTACT"
+            >
+              START A PROJECT →
+            </a>
+            <a 
+              href="#selected-work" 
+              class="border border-white/30 text-coldprint px-8 py-4 font-mono text-xs tracking-widest uppercase hover:border-white hover:text-emulsion transition-colors inline-block"
+              data-cursor="ARCHIVE"
+            >
+              VIEW ALL WORK
+            </a>
+          </div>
+
+          <!-- Direct Verification Email -->
+          <div class="pt-6 font-mono text-xs text-timecode flex items-center gap-3">
+            <span>OFFICIAL DISPATCH:</span>
+            <a href="mailto:chinthalavk040@gmail.com" class="text-emulsion hover:text-rec underline underline-offset-4">
+              chinthalavk040@gmail.com
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outro Terminal Baseline -->
+      <div class="max-w-7xl mx-auto w-full mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between font-mono text-[11px] text-timecode gap-4">
+        <div>
+          © CHINTHALA VIJAY KUMAR. ALL RIGHTS RESERVED.
+        </div>
+        <div class="flex items-center gap-4">
+          <span>CHAPTER 01 / HOME COMPLETE</span>
+          <span>● END FRAME</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 02 GLOBAL BOTTOM DOCK TRACK -->
+  <footer class="fixed bottom-0 left-0 right-0 h-10 z-50 bg-[#070708]/95 backdrop-blur-md border-t border-white/[0.08] px-4 md:px-8 flex items-center justify-between font-mono text-[11px] text-timecode">
+    <!-- Active Chapter & Track Identification -->
+    <div class="flex items-center gap-4">
+      <span class="text-emulsion font-bold">CH_01 / HOME</span>
+      <span class="text-white/20 hidden sm:inline-block">|</span>
+      <span class="text-coldprint hidden sm:inline-block">CINEMATOGRAPHY · EDITING</span>
+    </div>
+
+    <!-- Active Dynamic Scene Tracker -->
+    <div class="flex items-center gap-2">
+      <span class="w-1.5 h-1.5 rounded-full bg-rec animate-pulse"></span>
+      <span id="dock-scene-state" class="text-emulsion font-semibold">SCENE 01 / TAKE 01</span>
+    </div>
+
+    <!-- Audio / Display Protocol Status -->
+    <div class="hidden md:flex items-center gap-4">
+      <span class="text-white/40">AUDIO: MUTED (STUDIO DEFAULT)</span>
+      <span class="text-white/20">|</span>
+      <span class="text-white/40">GATE: 2.39:1 / 16:9 DUAL</span>
+    </div>
+  </footer>
+
+  <!-- THEATRE MODAL: ZERO OVERHEAD DEFERRED YOUTUBE PLAYER -->
+  <div id="video-theatre" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4 md:p-12" aria-hidden="true">
+    <div class="relative w-full max-w-5xl bg-suite border border-white/20 flex flex-col overflow-hidden shadow-2xl">
+      <!-- Modal Header -->
+      <div class="h-11 bg-void border-b border-white/10 px-4 flex items-center justify-between font-mono text-xs">
+        <div class="flex items-center gap-3">
+          <span class="text-rec font-bold">● THEATRE PLAYHEAD</span>
+          <span id="modal-video-title" class="text-coldprint truncate max-w-xs md:max-w-md font-semibold"></span>
+        </div>
+        <button id="modal-close-btn" class="text-coldprint hover:text-emulsion p-1.5 font-bold uppercase transition" data-cursor="CLOSE">
+          ✕ CLOSE CUT [ESC]
+        </button>
+      </div>
+
+      <!-- Iframe Injection Bay -->
+      <div class="relative w-full aspect-video bg-black">
+        <div id="iframe-target" class="w-full h-full flex items-center justify-center text-timecode font-mono text-xs">
+          <!-- Dynamically populated upon intent -->
+        </div>
+      </div>
+
+      <!-- Modal Bottom Information Track -->
+      <div class="p-3 bg-void/80 border-t border-white/10 flex items-center justify-between font-mono text-[10px] text-timecode">
+        <span id="modal-creator-tag">CREDIT: INFINITUM NETWORK SOLUTIONS</span>
+        <span>STUDIO REEL PLAYBACK</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 01. Opening Sequence Choreography (Scene 00 - 04)
+      setTimeout(() => {
+        // Trigger Masked Title reveals
+        const heroTitle = document.getElementById('hero-title-container');
+        if (heroTitle) {
+          heroTitle.classList.add('revealed');
+        }
+        
+        // Expand the cut line baseline
+        const baseline = document.getElementById('hero-baseline');
+        if (baseline) {
+          baseline.style.width = '100%';
+        }
+      }, 350);
+
+      // 02. Reticle Cursor Management (Desktop only)
+      const reticle = document.getElementById('cursor-reticle');
+      const reticleDot = document.getElementById('reticle-dot');
+      const reticleLabel = document.getElementById('reticle-label');
+
+      if (window.matchMedia('(pointer: fine)').matches && reticle) {
+        window.addEventListener('mousemove', (e) => {
+          reticle.style.left = `${e.clientX}px`;
+          reticle.style.top = `${e.clientY}px`;
+        });
+
+        // Hover target expansion
+        const interactiveElements = document.querySelectorAll('[data-cursor]');
+        interactiveElements.forEach(el => {
+          el.addEventListener('mouseenter', () => {
+            const label = el.getAttribute('data-cursor') || 'VIEW';
+            reticle.style.width = '70px';
+            reticle.style.height = '28px';
+            reticle.style.backgroundColor = '#F4F4F6';
+            reticle.style.borderColor = '#F4F4F6';
+            reticleDot.style.display = 'none';
+            reticleLabel.textContent = `[${label}]`;
+            reticleLabel.style.opacity = '1';
+          });
+
+          el.addEventListener('mouseleave', () => {
+            reticle.style.width = '20px';
+            reticle.style.height = '20px';
+            reticle.style.backgroundColor = 'transparent';
+            reticle.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+            reticleDot.style.display = 'block';
+            reticleLabel.style.opacity = '0';
+          });
+        });
+      }
+
+      // 03. Dynamic Deterministic Scroll Timecode & Bottom Track Sync
+      const hudTimecode = document.getElementById('hud-timecode');
+      const dockSceneState = document.getElementById('dock-scene-state');
+      
+      const sections = [
+        { id: 'hero-sequence', label: 'SCENE 01 / TAKE 01' },
+        { id: 'first-frame-scene', label: 'SCENE 01 / TAKE 02' },
+        { id: 'craft-sequence', label: 'SCENE 02 / TAKE 01' },
+        { id: 'selected-work', label: 'SCENE 02 / TAKE 02' },
+        { id: 'career-teaser', label: 'SCENE 03 / TAKE 01' },
+        { id: 'contact-sequence', label: 'SCENE 03 / TAKE 02' }
+      ];
+
+      function formatTimecode(progress) {
+        // Deterministic translation: 0% -> 00:00:01:00, 100% -> 00:00:24:23
+        const totalFrames = Math.floor(progress * (24 * 24)); // ~576 frames
+        const seconds = Math.floor(totalFrames / 24) + 1;
+        const frames = totalFrames % 24;
+        const sStr = String(seconds).padStart(2, '0');
+        const fStr = String(frames).padStart(2, '0');
+        return `00:00:${sStr}:${fStr}`;
+      }
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = Math.min(Math.max(scrollTop / (maxScroll || 1), 0), 1);
+
+        // Update HUD deterministic timecode
+        if (hudTimecode) {
+          hudTimecode.textContent = formatTimecode(progress);
+        }
+
+        // Determine current scene based on scroll coordinate
+        const scrollPosition = scrollTop + (window.innerHeight * 0.4);
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const el = document.getElementById(sections[i].id);
+          if (el && el.offsetTop <= scrollPosition) {
+            if (dockSceneState && dockSceneState.textContent !== sections[i].label) {
+              dockSceneState.textContent = sections[i].label;
+            }
+            break;
+          }
+        }
+      }, { passive: true });
+
+      // 04. Navigation Drawer Toggle Actions
+      const navBtn = document.getElementById('nav-btn');
+      const navCloseBtn = document.getElementById('nav-close-btn');
+      const navDrawer = document.getElementById('nav-drawer');
+      const navLinks = document.querySelectorAll('.nav-link');
+
+      function openNav() {
+        navDrawer.classList.remove('-translate-y-full');
+        navDrawer.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeNav() {
+        navDrawer.classList.add('-translate-y-full');
+        navDrawer.setAttribute('aria-hidden', 'true');
+      }
+
+      if (navBtn) navBtn.addEventListener('click', openNav);
+      if (navCloseBtn) navCloseBtn.addEventListener('click', closeNav);
+      navLinks.forEach(link => link.addEventListener('click', closeNav));
+
+      // 05. Deferred YouTube Video Modal Theatre
+      const videoTheatre = document.getElementById('video-theatre');
+      const iframeTarget = document.getElementById('iframe-target');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modalVideoTitle = document.getElementById('modal-video-title');
+      const modalCreatorTag = document.getElementById('modal-creator-tag');
+
+      window.openVideoModal = function(cardElement) {
+        const videoId = cardElement.getAttribute('data-video-id');
+        const videoTitle = cardElement.getAttribute('data-video-title');
+        const creator = cardElement.getAttribute('data-video-creator');
+
+        if (modalVideoTitle) modalVideoTitle.textContent = videoTitle;
+        if (modalCreatorTag) modalCreatorTag.textContent = `CREDIT: ${creator}`;
+
+        // Defer instantiation until explicit user intent
+        iframeTarget.innerHTML = `
+          <iframe 
+            class="w-full h-full border-0" 
+            src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" 
+            title="${videoTitle}" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+          ></iframe>
+        `;
+
+        videoTheatre.classList.remove('opacity-0', 'pointer-events-none');
+        videoTheatre.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      };
+
+      function closeVideoModal() {
+        videoTheatre.classList.add('opacity-0', 'pointer-events-none');
+        videoTheatre.setAttribute('aria-hidden', 'true');
+        iframeTarget.innerHTML = '';
+        document.body.style.overflow = '';
+      }
+
+      if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeVideoModal);
+      if (videoTheatre) {
+        videoTheatre.addEventListener('click', (e) => {
+          if (e.target === videoTheatre) closeVideoModal();
+        });
+      }
+
+      // Keyboard Esc listener for accessibility
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeVideoModal();
+          closeNav();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
