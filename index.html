@@ -101,6 +101,39 @@
       aspect-ratio: 2.39 / 1;
     }
 
+    /* Chapter Navigation Link Styles & Active State Indicator */
+    .nav-chapter-link {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border: 1px solid transparent;
+      padding: 0.125rem 0.375rem;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-chapter-link:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #F4F4F6;
+    }
+
+    .nav-chapter-link.active-cut {
+      color: #F4F4F6 !important;
+      border-color: rgba(229, 72, 51, 0.6) !important;
+      background-color: rgba(229, 72, 51, 0.12);
+    }
+
+    .nav-chapter-link.active-cut .chapter-num {
+      color: #E54833 !important;
+    }
+
+    .nav-chapter-link.active-cut::after {
+      content: '●';
+      font-size: 6px;
+      color: #E54833;
+      margin-left: 2px;
+    }
+
     /* Respect Reduced Motion */
     @media (prefers-reduced-motion: reduce) {
       .mask-reveal-inner {
@@ -139,12 +172,45 @@
       <span class="text-emulsion font-sans text-xs uppercase tracking-widest font-medium hidden sm:inline-block">CHINTHALA VIJAY KUMAR</span>
     </div>
 
-    <!-- Center Track / Status Indicator -->
+    <!-- Center Track / Status Indicator + Extended Chapter Navigation -->
     <div class="hidden lg:flex items-center gap-3 text-timecode text-[11px]">
       <span class="text-white/40 font-mono">WORKSPACE:</span>
       <span class="text-coldprint">POST-PRODUCTION SUITE</span>
       <span class="text-white/20">/</span>
       <span class="text-white/40 font-mono">DCI-P3 24FPS</span>
+
+      <!-- Divider -->
+      <span class="text-white/20 mx-1">|</span>
+
+      <!-- Chapter Navigation Links -->
+      <nav class="flex items-center gap-2 font-mono text-[11px] tracking-wider" aria-label="Chapter Direct Links">
+        <a 
+          href="./CH_02.html" 
+          class="nav-chapter-link text-coldprint/80 hover:text-emulsion transition-all group" 
+          data-cursor="GO CH_02"
+        >
+          <span class="chapter-num text-white/30 text-[9px] group-hover:text-rec transition-colors">02</span>
+          <span>CH_02</span>
+        </a>
+        <span class="text-white/20">·</span>
+        <a 
+          href="./CH_03.html" 
+          class="nav-chapter-link text-coldprint/80 hover:text-emulsion transition-all group" 
+          data-cursor="GO CH_03"
+        >
+          <span class="chapter-num text-white/30 text-[9px] group-hover:text-rec transition-colors">03</span>
+          <span>CH_03</span>
+        </a>
+        <span class="text-white/20">·</span>
+        <a 
+          href="./CH_04.html" 
+          class="nav-chapter-link text-coldprint/80 hover:text-emulsion transition-all group" 
+          data-cursor="GO CH_04"
+        >
+          <span class="chapter-num text-white/30 text-[9px] group-hover:text-rec transition-colors">04</span>
+          <span>CH_04</span>
+        </a>
+      </nav>
     </div>
 
     <!-- Live Deterministic Scroll Timecode & Menu CTA -->
@@ -158,6 +224,27 @@
       </button>
     </div>
   </header>
+
+  <!-- RESPONSIVE CHAPTER STRIP FOR TABLETS & MOBILES (< 1024px) -->
+  <div class="flex lg:hidden fixed top-12 left-0 right-0 h-7 z-40 bg-[#070708]/95 backdrop-blur-md border-b border-white/[0.06] px-4 items-center justify-between font-mono text-[10px] tracking-wider text-timecode overflow-x-auto">
+    <div class="flex items-center gap-2 shrink-0">
+      <span class="text-white/40 font-mono">DCI-P3 24FPS</span>
+      <span class="text-white/20">/</span>
+    </div>
+    <nav class="flex items-center gap-3 shrink-0" aria-label="Mobile Chapter Direct Links">
+      <a href="./CH_02.html" class="nav-chapter-link text-coldprint/80 hover:text-emulsion transition-colors" data-cursor="GO CH_02">
+        <span class="chapter-num text-white/30 text-[9px]">02</span> CH_02
+      </a>
+      <span class="text-white/20">·</span>
+      <a href="./CH_03.html" class="nav-chapter-link text-coldprint/80 hover:text-emulsion transition-colors" data-cursor="GO CH_03">
+        <span class="chapter-num text-white/30 text-[9px]">03</span> CH_03
+      </a>
+      <span class="text-white/20">·</span>
+      <a href="./CH_04.html" class="nav-chapter-link text-coldprint/80 hover:text-emulsion transition-colors" data-cursor="GO CH_04">
+        <span class="chapter-num text-white/30 text-[9px]">04</span> CH_04
+      </a>
+    </nav>
+  </div>
 
   <!-- SLIDE-OUT SCENE INDEX DRAWER -->
   <div id="nav-drawer" class="fixed inset-0 z-40 bg-void/98 backdrop-blur-xl -translate-y-full transition-transform duration-500 ease-expo-out flex flex-col justify-between p-8 md:p-16 border-b border-white/10" aria-hidden="true">
@@ -310,7 +397,7 @@
           <!-- Vignette & Lens Distortion Simulation -->
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 z-10 pointer-events-none"></div>
           
-          <!-- Cinematic Key Visual: High-production atmospheric visual still -->
+          <!-- Cinematic Key Visual -->
           <img 
             src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=2000&q=85" 
             alt="Cinematic frame capture in editing room" 
@@ -440,14 +527,13 @@
           </div>
         </div>
 
-        <!-- PRIMARY FEATURED PROJECT (Dominant Visual Footprint) -->
+        <!-- PRIMARY FEATURED PROJECT -->
         <div class="mb-20">
           <div class="flex items-center justify-between mb-3 font-mono text-xs text-timecode">
             <span class="text-emulsion font-bold">[PRIMARY FEATURE 01]</span>
             <span>ORIGINAL BROADCAST / 4K</span>
           </div>
 
-          <!-- Primary Project Card -->
           <article 
             class="relative w-full bg-void border border-white/10 overflow-hidden group cursor-pointer transition-all duration-300 hover:border-white/40"
             data-video-id="dQw4w9WgXcQ"
@@ -457,7 +543,6 @@
             data-cursor="PLAY REEL"
             onclick="openVideoModal(this)"
           >
-            <!-- 16:9 / 2.39:1 Responsive Frame Canvas -->
             <div class="relative w-full aspect-video md:aspect-anamorphic overflow-hidden bg-black">
               <img 
                 src="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1800&q=85" 
@@ -468,14 +553,12 @@
               />
               <div class="absolute inset-0 bg-gradient-to-t from-void via-void/30 to-transparent"></div>
 
-              <!-- Reticle Play Overlay Button -->
               <div class="absolute inset-0 flex items-center justify-center">
                 <div class="w-16 h-16 md:w-20 md:h-20 border border-white/40 bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:border-rec group-hover:scale-110">
                   <div class="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-12 border-l-emulsion group-hover:border-l-rec transition-colors ml-1"></div>
                 </div>
               </div>
 
-              <!-- Corner Metadata Pins -->
               <div class="absolute top-4 left-4 font-mono text-[10px] text-white/80 bg-void/80 px-2 py-1 border border-white/10 uppercase">
                 Tamada / Infinitum Lineage
               </div>
@@ -484,7 +567,6 @@
               </div>
             </div>
 
-            <!-- Card Bottom Metadata -->
             <div class="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-white/[0.08]">
               <div>
                 <div class="flex items-center gap-3 font-mono text-xs text-timecode mb-2">
@@ -508,9 +590,8 @@
           </article>
         </div>
 
-        <!-- SECONDARY FEATURES: TWO-COLUMN ASYMMETRICAL EDITORIAL GRID -->
+        <!-- SECONDARY FEATURES GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          
           <!-- Secondary Project 01 -->
           <article 
             class="bg-void border border-white/10 overflow-hidden group cursor-pointer hover:border-white/40 transition-all"
@@ -596,13 +677,13 @@
           </article>
         </div>
 
-        <!-- Creator Collaboration Mention Bar (Scene 19) -->
+        <!-- Creator Collaboration Mention Bar -->
         <div class="mt-14 border border-white/[0.08] p-6 bg-void/50 flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs">
           <div class="text-timecode">
             <span class="text-rec font-semibold">// CREDITED CHANNELS & TALENT:</span>
             <span class="text-coldprint ml-2">Sheetal Gautham · Sushma Gopal · Chandoo Gadu · Don Pruthvi · Varsha D'Souza · Kirak Pilla</span>
           </div>
-          <a href="#work-archive" class="inline-flex items-center gap-2 text-emulsion hover:text-rec uppercase tracking-wider font-semibold" data-cursor="VIEW ALL">
+          <a href="#selected-work" class="inline-flex items-center gap-2 text-emulsion hover:text-rec uppercase tracking-wider font-semibold" data-cursor="VIEW ALL">
             <span>VIEW COMPLETE WORK ARCHIVE</span>
             <span>→</span>
           </a>
@@ -610,7 +691,7 @@
       </div>
     </section>
 
-    <!-- SCENE 12: CINEMATIC PAUSE (DELIBERATE RESTRAINT) -->
+    <!-- SCENE 12: CINEMATIC PAUSE -->
     <section class="relative w-full py-36 md:py-48 px-4 sm:px-8 md:px-16 bg-void flex items-center justify-center text-center overflow-hidden border-t border-white/[0.08]">
       <div class="max-w-4xl mx-auto space-y-6">
         <span class="font-mono text-xs text-white/30 uppercase tracking-[0.3em] block">[INTERMISSION — ZERO FRAME]</span>
@@ -623,7 +704,7 @@
       </div>
     </section>
 
-    <!-- SCENE 13: EXPERIENCE TEASER (THE PHYSICAL JOURNEY) -->
+    <!-- SCENE 13: EXPERIENCE TEASER -->
     <section id="career-teaser" class="relative w-full py-24 px-4 sm:px-8 md:px-16 bg-suite border-t border-white/[0.08]">
       <div class="max-w-7xl mx-auto">
         <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-16 font-mono text-xs text-timecode">
@@ -644,7 +725,6 @@
 
           <!-- Milestones Visual Track -->
           <div class="space-y-8 font-mono text-xs border-l border-white/15 pl-6 md:pl-8">
-            <!-- 2021 - Present -->
             <div class="relative group">
               <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-rec rounded-none"></div>
               <span class="text-rec font-bold">2021 — PRESENT</span>
@@ -652,7 +732,6 @@
               <p class="text-coldprint mt-1">Lead Video Editor — Digital Series, Branded Content, High-Retention Narrative Edits.</p>
             </div>
 
-            <!-- 2019 - 2021 -->
             <div class="relative group">
               <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/40 rounded-none"></div>
               <span class="text-timecode font-bold">2019 — 2021</span>
@@ -660,7 +739,6 @@
               <p class="text-coldprint mt-1">Assistant & Director of Photography (DOP) — Sets, Lighting Rigs, Camera Operation & Assembly Edits.</p>
             </div>
 
-            <!-- 2016 - 2019 -->
             <div class="relative group">
               <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/20 rounded-none"></div>
               <span class="text-timecode font-bold">2016 — 2019</span>
@@ -672,10 +750,9 @@
       </div>
     </section>
 
-    <!-- SCENE 14 - 15: SECOND CINEMATIC FRAME & WHY THE WORK MATTERS -->
+    <!-- SCENE 14 - 15: SECOND CINEMATIC FRAME -->
     <section class="relative w-full py-24 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08]">
       <div class="max-w-7xl mx-auto">
-        <!-- Second Visual Frame in Full Bleed Width -->
         <div class="relative w-full aspect-[21/9] bg-black overflow-hidden border border-white/10 group cursor-pointer" data-cursor="OBSERVE">
           <img 
             src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&q=85" 
@@ -691,7 +768,6 @@
           </div>
         </div>
 
-        <!-- Why the Work Matters Editorial Narrative -->
         <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-white/[0.08] pt-12">
           <div>
             <span class="font-mono text-xs text-rec uppercase tracking-wider block mb-2">01 / RHYTHM & TEMPO</span>
@@ -718,7 +794,6 @@
     <!-- SCENE 16 - 17: FINAL HOME SEQUENCE & DIRECT CTA -->
     <section id="contact-sequence" class="relative w-full py-32 md:py-44 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08] flex flex-col justify-between">
       <div class="max-w-7xl mx-auto w-full">
-        <!-- Sequence Outro Head -->
         <div class="font-mono text-xs text-timecode flex items-center justify-between border-b border-white/10 pb-4 mb-16">
           <div class="flex items-center gap-2">
             <span class="text-rec font-bold">SEQ_OUTRO</span>
@@ -728,7 +803,6 @@
           <span>CUT TO BLACK IMMINENT</span>
         </div>
 
-        <!-- The Closing Statement & Invocation -->
         <div class="max-w-4xl space-y-8">
           <span class="font-mono text-xs text-rec uppercase tracking-widest block">// NEXT SEQUENCE</span>
           <h2 class="font-title text-4xl sm:text-6xl md:text-8xl font-black text-emulsion uppercase tracking-tight leading-[0.95]">
@@ -738,7 +812,6 @@
             Have a story, episodic series, commercial campaign, channel, film, or visual project in mind? Let's enter the edit.
           </p>
 
-          <!-- Direct Actions -->
           <div class="pt-6 flex flex-wrap items-center gap-6">
             <a 
               href="mailto:chinthalavk040@gmail.com" 
@@ -756,7 +829,6 @@
             </a>
           </div>
 
-          <!-- Direct Verification Email -->
           <div class="pt-6 font-mono text-xs text-timecode flex items-center gap-3">
             <span>OFFICIAL DISPATCH:</span>
             <a href="mailto:chinthalavk040@gmail.com" class="text-emulsion hover:text-rec underline underline-offset-4">
@@ -766,7 +838,6 @@
         </div>
       </div>
 
-      <!-- Outro Terminal Baseline -->
       <div class="max-w-7xl mx-auto w-full mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between font-mono text-[11px] text-timecode gap-4">
         <div>
           © CHINTHALA VIJAY KUMAR. ALL RIGHTS RESERVED.
@@ -781,20 +852,17 @@
 
   <!-- 02 GLOBAL BOTTOM DOCK TRACK -->
   <footer class="fixed bottom-0 left-0 right-0 h-10 z-50 bg-[#070708]/95 backdrop-blur-md border-t border-white/[0.08] px-4 md:px-8 flex items-center justify-between font-mono text-[11px] text-timecode">
-    <!-- Active Chapter & Track Identification -->
     <div class="flex items-center gap-4">
       <span class="text-emulsion font-bold">CH_01 / HOME</span>
       <span class="text-white/20 hidden sm:inline-block">|</span>
       <span class="text-coldprint hidden sm:inline-block">CINEMATOGRAPHY · EDITING</span>
     </div>
 
-    <!-- Active Dynamic Scene Tracker -->
     <div class="flex items-center gap-2">
       <span class="w-1.5 h-1.5 rounded-full bg-rec animate-pulse"></span>
       <span id="dock-scene-state" class="text-emulsion font-semibold">SCENE 01 / TAKE 01</span>
     </div>
 
-    <!-- Audio / Display Protocol Status -->
     <div class="hidden md:flex items-center gap-4">
       <span class="text-white/40">AUDIO: MUTED (STUDIO DEFAULT)</span>
       <span class="text-white/20">|</span>
@@ -802,10 +870,9 @@
     </div>
   </footer>
 
-  <!-- THEATRE MODAL: ZERO OVERHEAD DEFERRED YOUTUBE PLAYER -->
+  <!-- THEATRE MODAL: YOUTUBE PLAYER -->
   <div id="video-theatre" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4 md:p-12" aria-hidden="true">
     <div class="relative w-full max-w-5xl bg-suite border border-white/20 flex flex-col overflow-hidden shadow-2xl">
-      <!-- Modal Header -->
       <div class="h-11 bg-void border-b border-white/10 px-4 flex items-center justify-between font-mono text-xs">
         <div class="flex items-center gap-3">
           <span class="text-rec font-bold">● THEATRE PLAYHEAD</span>
@@ -816,14 +883,11 @@
         </button>
       </div>
 
-      <!-- Iframe Injection Bay -->
       <div class="relative w-full aspect-video bg-black">
         <div id="iframe-target" class="w-full h-full flex items-center justify-center text-timecode font-mono text-xs">
-          <!-- Dynamically populated upon intent -->
         </div>
       </div>
 
-      <!-- Modal Bottom Information Track -->
       <div class="p-3 bg-void/80 border-t border-white/10 flex items-center justify-between font-mono text-[10px] text-timecode">
         <span id="modal-creator-tag">CREDIT: INFINITUM NETWORK SOLUTIONS</span>
         <span>STUDIO REEL PLAYBACK</span>
@@ -833,15 +897,13 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 01. Opening Sequence Choreography (Scene 00 - 04)
+      // 01. Opening Sequence Choreography
       setTimeout(() => {
-        // Trigger Masked Title reveals
         const heroTitle = document.getElementById('hero-title-container');
         if (heroTitle) {
           heroTitle.classList.add('revealed');
         }
         
-        // Expand the cut line baseline
         const baseline = document.getElementById('hero-baseline');
         if (baseline) {
           baseline.style.width = '100%';
@@ -859,12 +921,11 @@
           reticle.style.top = `${e.clientY}px`;
         });
 
-        // Hover target expansion
         const interactiveElements = document.querySelectorAll('[data-cursor]');
         interactiveElements.forEach(el => {
           el.addEventListener('mouseenter', () => {
             const label = el.getAttribute('data-cursor') || 'VIEW';
-            reticle.style.width = '70px';
+            reticle.style.width = '74px';
             reticle.style.height = '28px';
             reticle.style.backgroundColor = '#F4F4F6';
             reticle.style.borderColor = '#F4F4F6';
@@ -898,8 +959,7 @@
       ];
 
       function formatTimecode(progress) {
-        // Deterministic translation: 0% -> 00:00:01:00, 100% -> 00:00:24:23
-        const totalFrames = Math.floor(progress * (24 * 24)); // ~576 frames
+        const totalFrames = Math.floor(progress * (24 * 24));
         const seconds = Math.floor(totalFrames / 24) + 1;
         const frames = totalFrames % 24;
         const sStr = String(seconds).padStart(2, '0');
@@ -912,12 +972,10 @@
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         const progress = Math.min(Math.max(scrollTop / (maxScroll || 1), 0), 1);
 
-        // Update HUD deterministic timecode
         if (hudTimecode) {
           hudTimecode.textContent = formatTimecode(progress);
         }
 
-        // Determine current scene based on scroll coordinate
         const scrollPosition = scrollTop + (window.innerHeight * 0.4);
         for (let i = sections.length - 1; i >= 0; i--) {
           const el = document.getElementById(sections[i].id);
@@ -965,7 +1023,6 @@
         if (modalVideoTitle) modalVideoTitle.textContent = videoTitle;
         if (modalCreatorTag) modalCreatorTag.textContent = `CREDIT: ${creator}`;
 
-        // Defer instantiation until explicit user intent
         iframeTarget.innerHTML = `
           <iframe 
             class="w-full h-full border-0" 
@@ -995,11 +1052,22 @@
         });
       }
 
-      // Keyboard Esc listener for accessibility
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeVideoModal();
           closeNav();
+        }
+      });
+
+      // 06. Active Chapter Indicator Synchronization
+      const currentFileName = window.location.pathname.split('/').pop() || 'index.html';
+      const chapterLinks = document.querySelectorAll('.nav-chapter-link');
+      
+      chapterLinks.forEach(link => {
+        const href = link.getAttribute('href').replace('./', '').split('#')[0];
+        if (href === currentFileName || (currentFileName === '' && href === 'index.html')) {
+          link.classList.add('active-cut');
+          link.setAttribute('aria-current', 'page');
         }
       });
     });
