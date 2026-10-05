@@ -188,11 +188,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 clamp(1rem, 4vw, 3.5rem);
+      padding: 0 clamp(0.75rem, 3.5vw, 3.5rem);
       font-family: var(--font-mono);
       font-size: 10.5px;
       letter-spacing: 0.14em;
       color: var(--text-muted);
+      gap: 12px;
     }
 
     .rec-badge {
@@ -201,6 +202,7 @@
       gap: 8px;
       color: var(--text-emulsion);
       font-weight: 500;
+      flex-shrink: 0;
     }
 
     .rec-dot {
@@ -215,21 +217,54 @@
       color: var(--text-emulsion);
       letter-spacing: 0.18em;
       text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .hud-right-nav {
       display: flex;
       align-items: center;
-      gap: clamp(1rem, 2.5vw, 2.5rem);
+      gap: clamp(0.6rem, 1.8vw, 1.8rem);
+      flex-shrink: 0;
+    }
+
+    .hud-chapter-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
     }
 
     .hud-link {
       color: var(--text-muted);
       transition: color 0.2s ease;
       text-transform: uppercase;
+      padding: 2px 4px;
+      display: inline-flex;
+      align-items: center;
     }
-    .hud-link:hover, .hud-link.active {
+    
+    .hud-link:hover {
       color: var(--text-emulsion);
+    }
+
+    .hud-link.active {
+      color: var(--text-emulsion);
+    }
+
+    .hud-link.active::after {
+      content: '●';
+      font-size: 6px;
+      color: var(--accent-rec);
+      margin-left: 3px;
+      line-height: 1;
+    }
+
+    .hud-sep {
+      color: var(--border-hairline);
+      margin: 0 3px;
+      user-select: none;
     }
 
     .studio-hud-bottom {
@@ -780,7 +815,7 @@
       margin-top: 0.5rem;
     }
 
-    /* Responsive */
+    /* Responsive Adaptation */
     @media (max-width: 960px) {
       .contact-sheet-grid {
         grid-template-columns: 1fr;
@@ -792,6 +827,29 @@
       .featured-hero-frame .frame-aspect-box {
         aspect-ratio: 16 / 9;
         min-height: auto;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .hud-title {
+        display: none;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .studio-hud-top {
+        padding: 0 0.85rem;
+      }
+      #hudTimecode {
+        display: none;
+      }
+      .hud-link {
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        padding: 1px 2px;
+      }
+      .hud-sep {
+        margin: 0 1px;
       }
     }
   </style>
@@ -826,12 +884,14 @@
 
     <div class="hud-right-nav">
       <span id="hudTimecode" aria-label="Active Timecode">00:00:24:00</span>
-      <nav aria-label="Chapter Jumps">
+      <nav class="hud-chapter-nav" aria-label="Chapter Jumps">
         <a href="index.html" class="hud-link" data-reticle="CUT">CH_01</a>
-        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
-        <a href="about.html" class="hud-link" data-reticle="CUT">CH_02</a>
-        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
-        <a href="archive.html" class="hud-link active" data-reticle="STAY">CH_03</a>
+        <span class="hud-sep">/</span>
+        <a href="CH_02.html" class="hud-link" data-reticle="CUT">CH_02</a>
+        <span class="hud-sep">/</span>
+        <a href="CH_03.html" class="hud-link active" data-reticle="STAY" aria-current="page">CH_03</a>
+        <span class="hud-sep">/</span>
+        <a href="CH_04.html" class="hud-link" data-reticle="CUT">CH_04</a>
       </nav>
     </div>
   </header>
@@ -1134,7 +1194,6 @@
           card.setAttribute('data-reticle', 'PLAY');
           card.setAttribute('tabindex', '0');
 
-          // High-Res thumbnail generation with graceful fallback
           const isRealYt = item.id.length === 11;
           const thumbUrl = isRealYt 
             ? `https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`
@@ -1182,7 +1241,6 @@
         theatreMeta.textContent = `${currentItem.creator} · ${currentItem.year} · ${currentItem.category}`;
         theatreFrameId.textContent = `FRAME ${String(idx + 1).padStart(3, '0')} / ${filtered.length}`;
 
-        // Defer instantiation of iframe strictly to click event
         const isRealYt = currentItem.id.length === 11;
         const embedSrc = isRealYt 
           ? `https://www.youtube-nocookie.com/embed/${currentItem.id}?autoplay=1&rel=0`
@@ -1195,7 +1253,7 @@
 
       function closeTheatre() {
         theatre.classList.remove('active');
-        theatreContainer.innerHTML = ""; // Complete teardown of iframe to protect performance
+        theatreContainer.innerHTML = "";
         document.body.style.overflow = '';
       }
 
@@ -1255,7 +1313,6 @@
 
         if (progressBar) progressBar.style.width = (progress * 100) + '%';
 
-        // Deterministic Timecode calculation (00:00:24:00 to 00:00:48:23)
         const totalFrames = Math.floor(progress * 576);
         const seconds = Math.floor(totalFrames / 24) + 24;
         const frames = totalFrames % 24;
