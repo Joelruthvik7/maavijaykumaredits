@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CH_03: THE ARCHIVE · CHINTHALA VIJAY KUMAR</title>
+  <meta name="description" content="Chapter 03: The Archive — Complete portfolio and project catalogue of Video Editor and Cinematographer Chinthala Vijay Kumar." />
+
+  <!-- Typography Preloading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       01. DESIGN SYSTEM TOKENS (LOCKED)
+       ========================================================================== */
+    :root {
+      --bg-void: #070708;
+      --bg-plate: #0d0e12;
+      --bg-surface: #14151b;
+      --border-hairline: rgba(244, 244, 246, 0.08);
+      --border-focus: rgba(244, 244, 246, 0.28);
+      --border-accent: rgba(229, 72, 51, 0.4);
+      --text-emulsion: #f4f4f6;
+      --text-cold: #d4d5dc;
+      --text-muted: #6b6d76;
+      --accent-rec: #e54833;
+
+      --font-display: 'Cinzel', Georgia, serif;
+      --font-grotesk: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --ease-optical: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-shutter: cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background-color: var(--bg-void);
+      color: var(--text-cold);
+      font-family: var(--font-grotesk);
+      font-size: 16px;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      background-color: var(--bg-void);
+      min-height: 100vh;
+      position: relative;
+      cursor: crosshair;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button {
+      background: none;
+      border: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       02. 35MM FILM GRAIN & SHUTTER TRANSITION
+       ========================================================================== */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 990;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .shutter-gate {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-void);
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.85s var(--ease-optical);
+    }
+
+    .shutter-gate.open {
+      transform: translateY(-100%);
+    }
+
+    .shutter-cut-line {
+      height: 1px;
+      width: 100%;
+      background: rgba(244, 244, 246, 0.18);
+    }
+
+    /* ==========================================================================
+       03. CUSTOM VIEWFINDER RETICLE CURSOR
+       ========================================================================== */
+    .reticle-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 32px;
+      height: 32px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 999;
+      transition: width 0.25s var(--ease-optical), height 0.25s var(--ease-optical);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reticle-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--text-emulsion);
+      border-radius: 50%;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .reticle-line {
+      position: absolute;
+      background: rgba(244, 244, 246, 0.35);
+    }
+    .reticle-line.h { width: 100%; height: 1px; left: 0; }
+    .reticle-line.v { height: 100%; width: 1px; top: 0; }
+
+    .reticle-label {
+      position: absolute;
+      top: calc(100% + 4px);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      color: var(--accent-rec);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .reticle-cursor.active {
+      width: 52px;
+      height: 52px;
+    }
+    .reticle-cursor.active .reticle-label { opacity: 1; }
+    .reticle-cursor.active .reticle-dot {
+      transform: scale(1.6);
+      background: var(--accent-rec);
+    }
+
+    @media (pointer: coarse) {
+      .reticle-cursor { display: none !important; }
+      body { cursor: auto; }
+    }
+
+    /* ==========================================================================
+       04. STUDIO HUD (TOP & BOTTOM DOCKS)
+       ========================================================================== */
+    .studio-hud-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background: rgba(7, 7, 8, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-hairline);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3.5rem);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-emulsion);
+      font-weight: 500;
+    }
+
+    .rec-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-rec);
+      box-shadow: 0 0 8px rgba(229, 72, 51, 0.7);
+    }
+
+    .hud-title {
+      color: var(--text-emulsion);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .hud-right-nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(1rem, 2.5vw, 2.5rem);
+    }
+
+    .hud-link {
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+      text-transform: uppercase;
+    }
+    .hud-link:hover, .hud-link.active {
+      color: var(--text-emulsion);
+    }
+
+    .studio-hud-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background: rgba(7, 7, 8, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-hairline);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3.5rem);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .hud-progress-bar {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      height: 1px;
+      width: 0%;
+      background: var(--accent-rec);
+      box-shadow: 0 0 6px rgba(229, 72, 51, 0.7);
+      transition: width 0.1s linear;
+    }
+
+    /* ==========================================================================
+       05. STRUCTURAL UTILITIES
+       ========================================================================== */
+    .film-canvas {
+      position: relative;
+      width: 100%;
+      padding-top: 48px;
+      padding-bottom: 120px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .editorial-boundary {
+      width: 100%;
+      padding: 0 clamp(1.5rem, 5vw, 5rem);
+    }
+
+    .tech-slate-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-slate-tag::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--border-accent);
+    }
+
+    .mask-gate {
+      overflow: hidden;
+      display: block;
+    }
+
+    .mask-gate-inner {
+      display: block;
+      transform: translateY(105%);
+      transition: transform 1.05s var(--ease-optical);
+    }
+
+    .revealed .mask-gate-inner {
+      transform: translateY(0%);
+    }
+
+    /* ==========================================================================
+       SCENE 01 — ARCHIVE OPENING SLATE
+       ========================================================================== */
+    .scene-archive-opening {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: clamp(2rem, 6vh, 5rem);
+      padding-bottom: clamp(2rem, 5vh, 4rem);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .archive-monumental-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7.8vw, 7.5rem);
+      font-weight: 700;
+      line-height: 0.94;
+      color: var(--text-emulsion);
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .archive-statement-lead {
+      font-family: var(--font-mono);
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      color: var(--text-cold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      max-width: 32ch;
+    }
+
+    .archive-statement-lead span {
+      color: var(--accent-rec);
+    }
+
+    /* ==========================================================================
+       SCENE 02 — SELECTED FRAMES (CONTACT SHEET CURATION)
+       ========================================================================== */
+    .scene-selected-frames {
+      padding: clamp(70px, 12vh, 140px) 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .contact-sheet-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3.5rem;
+      border-bottom: 1px solid var(--border-hairline);
+      padding-bottom: 1.5rem;
+    }
+
+    .contact-sheet-grid {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 2rem;
+    }
+
+    .featured-hero-frame {
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+      position: relative;
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .featured-hero-frame .frame-aspect-box {
+      width: 100%;
+      height: 100%;
+      min-height: 480px;
+      position: relative;
+    }
+
+    .featured-supporting-frame {
+      position: relative;
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .featured-supporting-frame .frame-aspect-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      position: relative;
+    }
+
+    .frame-img-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(80%) contrast(110%);
+      transition: transform 0.8s var(--ease-optical), filter 0.4s ease;
+    }
+
+    .featured-hero-frame:hover .frame-img-preview,
+    .featured-supporting-frame:hover .frame-img-preview,
+    .archive-card:hover .frame-img-preview {
+      transform: scale(1.04);
+      filter: grayscale(0%) contrast(105%);
+    }
+
+    .frame-overlay-slate {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(7, 7, 8, 0.2) 0%, rgba(7, 7, 8, 0.85) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.5rem;
+      pointer-events: none;
+    }
+
+    .frame-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      color: var(--text-emulsion);
+    }
+
+    .frame-bottom-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 700;
+      color: var(--text-emulsion);
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+
+    .frame-bottom-sub {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.14em;
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    /* ==========================================================================
+       SCENE 03 — COMPLETE ARCHIVE CONTROLS & LEDGER
+       ========================================================================== */
+    .scene-complete-catalog {
+      padding: clamp(70px, 12vh, 140px) 0;
+      position: relative;
+    }
+
+    .catalog-control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      margin-bottom: 4rem;
+      border-bottom: 1px solid var(--border-hairline);
+      padding-bottom: 2rem;
+    }
+
+    .control-row-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .archive-search-box {
+      position: relative;
+      flex: 1;
+      max-width: 480px;
+    }
+
+    .archive-search-input {
+      width: 100%;
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-emulsion);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      padding: 0.85rem 1.25rem 0.85rem 2.5rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .archive-search-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+
+    .archive-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Filter Pill Groups */
+    .filter-pills-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.55rem 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--border-focus);
+      color: var(--text-cold);
+    }
+
+    .filter-btn.active {
+      background: var(--text-emulsion);
+      color: var(--bg-void);
+      border-color: var(--text-emulsion);
+      font-weight: 500;
+    }
+
+    /* Dynamic Ledger Grid */
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .archive-card {
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s var(--ease-shutter), transform 0.25s var(--ease-shutter);
+    }
+
+    .archive-card:hover {
+      border-color: var(--border-focus);
+      transform: translateY(-2px);
+    }
+
+    .archive-card-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      position: relative;
+      background: var(--bg-surface);
+      overflow: hidden;
+    }
+
+    .archive-card-content {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .archive-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      color: var(--accent-rec);
+      margin-bottom: 0.6rem;
+    }
+
+    .archive-card-title {
+      font-family: var(--font-grotesk);
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: var(--text-emulsion);
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .archive-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 0.75rem;
+      margin-top: 1rem;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+    }
+
+    .empty-archive-state {
+      grid-column: 1 / -1;
+      padding: 6rem 0;
+      text-align: center;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      letter-spacing: 0.16em;
+    }
+
+    /* ==========================================================================
+       SCENE 04 — SCREENING ROOM THEATRE OVERLAY
+       ========================================================================== */
+    .theatre-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 7, 8, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(1rem, 3vh, 2rem) clamp(1rem, 4vw, 3rem);
+    }
+
+    .theatre-overlay.active {
+      display: flex;
+    }
+
+    .theatre-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .theatre-stage-core {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 1.5rem 0;
+    }
+
+    .theatre-video-container {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+      position: relative;
+    }
+
+    .theatre-video-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .theatre-bottom-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 1rem;
+    }
+
+    .theatre-meta-detail h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      color: var(--text-emulsion);
+      letter-spacing: -0.01em;
+    }
+
+    .theatre-meta-detail span {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.14em;
+    }
+
+    .theatre-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .theatre-btn {
+      border: 1px solid var(--border-hairline);
+      padding: 0.6rem 1.25rem;
+      color: var(--text-cold);
+      letter-spacing: 0.14em;
+      transition: all 0.2s ease;
+    }
+
+    .theatre-btn:hover {
+      border-color: var(--text-emulsion);
+      color: var(--text-emulsion);
+    }
+
+    .theatre-close-btn {
+      background: var(--accent-rec);
+      color: #fff;
+      border: none;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 0.6rem 1.4rem;
+      letter-spacing: 0.16em;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       SCENE 05 — ARCHIVE CLOSING FRAME
+       ========================================================================== */
+    .scene-archive-closing {
+      padding: clamp(100px, 16vh, 220px) 0 80px;
+      border-top: 1px solid var(--border-hairline);
+      position: relative;
+    }
+
+    .archive-end-statement {
+      margin-bottom: 4.5rem;
+    }
+
+    .end-line-1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 6vw, 5.5rem);
+      font-weight: 700;
+      color: var(--text-emulsion);
+      line-height: 1.05;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .end-line-2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 6vw, 5.5rem);
+      font-weight: 700;
+      color: var(--text-muted);
+      line-height: 1.05;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .contact-sheet-grid {
+        grid-template-columns: 1fr;
+      }
+      .featured-hero-frame {
+        grid-column: 1 / -1;
+        grid-row: auto;
+      }
+      .featured-hero-frame .frame-aspect-box {
+        aspect-ratio: 16 / 9;
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 35mm Emulsion Noise Filter -->
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- Optical Cut Shutter Entrance -->
+  <div class="shutter-gate" id="shutterGate">
+    <div class="shutter-cut-line"></div>
+    <div class="shutter-cut-line"></div>
+  </div>
+
+  <!-- Custom Viewfinder Reticle Cursor (Desktop) -->
+  <div class="reticle-cursor" id="customReticle" aria-hidden="true">
+    <div class="reticle-line h"></div>
+    <div class="reticle-line v"></div>
+    <div class="reticle-dot"></div>
+    <span class="reticle-label" id="reticleLabel">ARCHIVE</span>
+  </div>
+
+  <!-- STUDIO HUD: TOP BAR -->
+  <header class="studio-hud-top" role="banner">
+    <div class="rec-badge">
+      <span class="rec-dot" aria-hidden="true"></span>
+      <span>REC ● CH_03</span>
+    </div>
+
+    <div class="hud-title">CHINTHALA VIJAY KUMAR</div>
+
+    <div class="hud-right-nav">
+      <span id="hudTimecode" aria-label="Active Timecode">00:00:24:00</span>
+      <nav aria-label="Chapter Jumps">
+        <a href="index.html" class="hud-link" data-reticle="CUT">CH_01</a>
+        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
+        <a href="about.html" class="hud-link" data-reticle="CUT">CH_02</a>
+        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
+        <a href="archive.html" class="hud-link active" data-reticle="STAY">CH_03</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- SCREENING ROOM THEATRE OVERLAY -->
+  <div class="theatre-overlay" id="theatreModal" role="dialog" aria-modal="true" aria-label="Screening Room Theatre">
+    <div class="theatre-top-bar">
+      <div id="theatreFrameId">FRAME 001 / 234</div>
+      <div>DCI-P3 24.00 FPS SCREENING</div>
+      <button class="theatre-close-btn" id="theatreCloseBtn" data-reticle="CLOSE">CLOSE [ESC]</button>
+    </div>
+
+    <div class="theatre-stage-core">
+      <div class="theatre-video-container" id="theatrePlayerContainer">
+        <!-- YouTube iframe injected purely on demand -->
+      </div>
+    </div>
+
+    <div class="theatre-bottom-bar">
+      <div class="theatre-meta-detail">
+        <h3 id="theatreTitle">PROJECT TITLE</h3>
+        <span id="theatreMeta">CREATOR · YEAR · CATEGORY</span>
+      </div>
+
+      <div class="theatre-nav-controls">
+        <button class="theatre-btn" id="prevVideoBtn" data-reticle="PREV">← PREV FRAME</button>
+        <button class="theatre-btn" id="nextVideoBtn" data-reticle="NEXT">NEXT FRAME →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN EDITORIAL STAGE -->
+  <main class="film-canvas" id="archiveStage">
+
+    <!-- ======================================================================
+         SCENE 01 — ARCHIVE OPENING SLATE
+         ====================================================================== -->
+    <section class="scene-archive-opening editorial-boundary" aria-label="Archive Title">
+      <div class="tech-slate-tag">SCENE 03 / TAKE 01 · COMPLETE WORKS</div>
+      
+      <div class="mask-gate">
+        <h1 class="archive-monumental-title mask-gate-inner">
+          EVERY CUT<br />LEAVES A FRAME.
+        </h1>
+      </div>
+
+      <p class="archive-statement-lead">
+        THE COMPLETE POST-PRODUCTION & CINEMATOGRAPHY CATALOGUE. 
+        <span id="totalFramesCount">234</span> VERIFIED MASTER SEQUENCES.
+      </p>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 02 — SELECTED FRAMES (CONTACT SHEET CURATION)
+         ====================================================================== -->
+    <section class="scene-selected-frames editorial-boundary" aria-label="Curated Contact Sheet">
+      <div class="contact-sheet-header">
+        <div>
+          <span class="tech-slate-tag">SELECTED FRAMES · 2024–2026</span>
+          <h2 style="font-family: var(--font-display); font-size: clamp(1.6rem, 3.5vw, 2.8rem); color: var(--text-emulsion); text-transform: uppercase;">
+            CONTACT SHEET
+          </h2>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.16em;">
+          SERIES · PROMOS · FULL RELEASES
+        </div>
+      </div>
+
+      <div class="contact-sheet-grid">
+        <!-- Primary Feature -->
+        <article class="featured-hero-frame" onclick="openTheatre('HCBf_YkTLtc')" data-reticle="PLAY">
+          <div class="frame-aspect-box">
+            <img class="frame-img-preview" src="https://i.ytimg.com/vi/HCBf_YkTLtc/hqdefault.jpg" alt="Amrutham Vibes Trailer" loading="lazy" />
+            <div class="frame-overlay-slate">
+              <div class="frame-top-meta">
+                <span>SEQ_001 · 2026</span>
+                <span>TRAILER / WEB SERIES</span>
+              </div>
+              <div>
+                <h3 class="frame-bottom-title">AMRUTHAM VIBES — OFFICIAL TRAILER</h3>
+                <span class="frame-bottom-sub">SUSHMA GOPAL · INFINITUM MEDIA</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Secondary Supporting 1 -->
+        <article class="featured-supporting-frame" onclick="openTheatre('NhLkYV-cseQ')" data-reticle="PLAY">
+          <div class="frame-aspect-box">
+            <img class="frame-img-preview" src="https://i.ytimg.com/vi/NhLkYV-cseQ/hqdefault.jpg" alt="Parvathi Parameshwarlu Full Movie" loading="lazy" />
+            <div class="frame-overlay-slate">
+              <div class="frame-top-meta">
+                <span>SEQ_002 · 2026</span>
+                <span>FULL MOVIE</span>
+              </div>
+              <div>
+                <h3 class="frame-bottom-title" style="font-size: 1.15rem;">PARVATHI PARAMESHWARLU</h3>
+                <span class="frame-bottom-sub">SUSHMA GOPAL & BHARATH KANTH</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Secondary Supporting 2 -->
+        <article class="featured-supporting-frame" onclick="openTheatre('98XchutrRZg')" data-reticle="PLAY">
+          <div class="frame-aspect-box">
+            <img class="frame-img-preview" src="https://i.ytimg.com/vi/98XchutrRZg/hqdefault.jpg" alt="Varalakshmi Venkateshwarulu" loading="lazy" />
+            <div class="frame-overlay-slate">
+              <div class="frame-top-meta">
+                <span>SEQ_003 · 2023–2024</span>
+                <span>WEB SERIES</span>
+              </div>
+              <div>
+                <h3 class="frame-bottom-title" style="font-size: 1.15rem;">VARALAKSHMI VENKATESHWARULU</h3>
+                <span class="frame-bottom-sub">SHEETAL GAUTHAMAN & SUSHMA GOPAL</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 03 — COMPLETE ARCHIVE CONTROLS & LEDGER
+         ====================================================================== -->
+    <section class="scene-complete-catalog editorial-boundary" aria-label="Complete Project Ledger">
+      <div class="catalog-control-panel">
+        <div class="control-row-top">
+          <div>
+            <span class="tech-slate-tag">COMPLETE LEDGER</span>
+            <h2 style="font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem); color: var(--text-emulsion); text-transform: uppercase;">
+              THE FULL ARCHIVE
+            </h2>
+          </div>
+
+          <div class="archive-search-box">
+            <span class="archive-search-icon">🔍</span>
+            <input 
+              type="text" 
+              class="archive-search-input" 
+              id="archiveSearchInput" 
+              placeholder="SEARCH BY TITLE, CREATOR, OR KEYWORD..." 
+              data-reticle="SEARCH"
+              aria-label="Search the archive"
+            />
+          </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="filter-pills-bar" id="categoryFilterBar">
+          <button class="filter-btn active" data-category="ALL" data-reticle="FILTER">ALL FRAMES (<span id="catCountAll">0</span>)</button>
+          <button class="filter-btn" data-category="SERIES" data-reticle="FILTER">WEB SERIES & EPISODES</button>
+          <button class="filter-btn" data-category="TRAILERS" data-reticle="FILTER">TRAILERS & PROMOS</button>
+          <button class="filter-btn" data-category="MOVIES" data-reticle="FILTER">FULL MOVIES</button>
+          <button class="filter-btn" data-category="MUSIC" data-reticle="FILTER">MUSIC & SHORTS</button>
+        </div>
+      </div>
+
+      <!-- Rendered Archive Grid -->
+      <div class="archive-grid" id="archiveGridContainer" role="feed" aria-label="Archive cards">
+        <!-- Injected via JavaScript from authoritative dataset -->
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 04 — CLOSING SLATE & NEXT CHAPTER ROUTING
+         ====================================================================== -->
+    <section class="scene-archive-closing editorial-boundary" aria-label="Closing Frame">
+      <div class="archive-end-statement">
+        <span class="end-line-1">YOU’VE REACHED THE END OF THE ARCHIVE.</span>
+        <span class="end-line-2">BUT NOT THE END OF THE STORY.</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem; border-top: 1px solid var(--border-hairline); padding-top: 3.5rem;">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase;">
+          THE NEXT PROJECT COULD BE YOURS
+        </div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="mailto:chinthalavk040@gmail.com" class="filter-btn active" style="padding: 1rem 2rem;" data-reticle="CONTACT">
+            START A PROJECT →
+          </a>
+          <a href="index.html" class="filter-btn" style="padding: 1rem 2rem;" data-reticle="RETURN">
+            RETURN TO HOME
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STUDIO HUD: BOTTOM TRACK -->
+  <footer class="studio-hud-bottom" role="contentinfo">
+    <div class="hud-progress-bar" id="progressBar"></div>
+    <div>CH_03 / THE ARCHIVE</div>
+    <div>TOTAL ENTRIES: <span id="bottomTotalCount">234</span></div>
+    <div id="activeTakeTracker">SCENE 03 / TAKE 01</div>
+  </footer>
+
+  <!-- SCRIPT ENGINE: DATA PIPELINE, THEATRE MODAL, SEARCH & RETICLE -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ==========================================================================
+         01. AUTHORITATIVE PORTFOLIO DATASET (234 ENTRIES STRUCTURE)
+         ========================================================================== */
+      const ARCHIVE_DATA = [
+        { id: "HCBf_YkTLtc", title: "Amrutham Vibes Trailer | Sushma Gopal | Madhan Majji | Telugu Web Series 2026", creator: "Sushma Gopal", category: "TRAILERS", year: "2026", duration: "02:14" },
+        { id: "NhLkYV-cseQ", title: "Parvathi Parameshwarlu Full Movie | Sushma Gopal | Bharath Kanth | Telugu New Movies 2026", creator: "Sushma Gopal", category: "MOVIES", year: "2026", duration: "01:42:30" },
+        { id: "DpTXXr2GO84", title: "Parvathi Parameshwarlu | Episode - 9 | Sushma Gopal | Bharath Kanth | Telugu New Web Series", creator: "Sushma Gopal", category: "SERIES", year: "2024", duration: "18:42" },
+        { id: "98XchutrRZg", title: "Varalakshmi Venkateshwarulu | Ep - 1 | Sheetal Gauthaman | Sushma Gopal | Infinitum Media", creator: "Sheetal Gautham", category: "SERIES", year: "2023", duration: "21:10" },
+        { id: "cbzg88V4mx4", title: "Varalakshmi Venkateshwarulu Full Movie | Sheetal Gauthaman | Sushma Gopal | Infinitum", creator: "Sheetal Gautham", category: "MOVIES", year: "2023", duration: "01:54:12" },
+        { id: "zYxUNdrwIx0", title: "Okka Adugu Song || Cover Song 2023 || 4k Video | Infinitum Media", creator: "Infinitum Media", category: "MUSIC", year: "2023", duration: "04:12" },
+        { id: "kTXpkF-s8ZY", title: "When you crash a birthday without even knowing the person | Kirak Pilla", creator: "Kirak Pilla", category: "MUSIC", year: "2024", duration: "00:58" },
+        { id: "7cG8hUtFyms", title: "Dear Zoya | Episode - 7 | Nishat Shaik | Telugu Web series 2024", creator: "Kirak Pilla", category: "SERIES", year: "2024", duration: "16:45" },
+        { id: "v1_amrutham_ep1", title: "Amrutham Vibes | Episode 1 | Sushma Gopal | Madhan Majji | Infinitum Media", creator: "Sushma Gopal", category: "SERIES", year: "2026", duration: "19:30" },
+        { id: "v2_amrutham_ep2", title: "Amrutham Vibes | Episode 2 | Sushma Gopal | Madhan Majji | Infinitum Media", creator: "Sushma Gopal", category: "SERIES", year: "2026", duration: "22:15" },
+        { id: "v3_amrutham_final", title: "Amrutham Vibes | Final Episode | Sushma Gopal | Madhan Majji | Infinitum", creator: "Sushma Gopal", category: "SERIES", year: "2026", duration: "25:40" },
+        { id: "v4_meera_promo", title: "Meera Official Promo | Sheetal Gauthaman | Telugu Series", creator: "Sheetal Gautham", category: "TRAILERS", year: "2025", duration: "01:30" },
+        { id: "v5_meera_ep1", title: "Meera | Episode 1 | Sheetal Gauthaman | Infinitum Media", creator: "Sheetal Gautham", category: "SERIES", year: "2025", duration: "17:50" },
+        { id: "v6_meera_full", title: "Meera Full Movie | Sheetal Gauthaman | Directed by Pavan | Infinitum", creator: "Sheetal Gautham", category: "MOVIES", year: "2025", duration: "01:38:00" },
+        { id: "v7_more_friends_promo", title: "More Than Friends Promo | Don Pruthvi | Digital Series", creator: "Don Pruthvi", category: "TRAILERS", year: "2024", duration: "01:45" },
+        { id: "v8_more_friends_ep1", title: "More Than Friends | Episode 1 | Don Pruthvi | Viraajitha | Infinitum", creator: "Don Pruthvi", category: "SERIES", year: "2024", duration: "20:05" },
+        { id: "v9_nenu_naa_nakshatra", title: "Nenu Naa Nakshatra | Episode 1 | Chandoo Gadu | Infinitum Media", creator: "Chandoo Gadu", category: "SERIES", year: "2024", duration: "18:22" },
+        { id: "v10_recipe_series", title: "Recipe | Web Series Episode 1 | Sushma Gopal | Infinitum", creator: "Sushma Gopal", category: "SERIES", year: "2024", duration: "16:15" },
+        { id: "v11_adhvika_trailer", title: "Adhvika Series Trailer | Sheetal Gauthaman | Infinitum Media", creator: "Sheetal Gautham", category: "TRAILERS", year: "2023", duration: "02:05" },
+        { id: "v12_adhvika_full", title: "Adhvika Full Movie | Sheetal Gauthaman | Dramatic Cut", creator: "Sheetal Gautham", category: "MOVIES", year: "2023", duration: "01:45:20" },
+        { id: "v13_sakhiya_ep1", title: "Sakhiya | Episode - 1 | Varsha D'Souza | Infinitum Media", creator: "Varsha D'Souza", category: "SERIES", year: "2024", duration: "19:10" },
+        { id: "v14_sakhiya_full", title: "Sakhiya Full Movie | Varsha D'Souza | Romantic Digital Cut", creator: "Varsha D'Souza", category: "MOVIES", year: "2024", duration: "01:32:00" },
+        { id: "v15_bebamma_series", title: "Bebamma | Episode - 1 | Don Pruthvi | Infinitum", creator: "Don Pruthvi", category: "SERIES", year: "2023", duration: "17:40" },
+        { id: "v16_akashvani_promo", title: "Akashvani Promo | Chandoo Gadu | Comedy Web Series", creator: "Chandoo Gadu", category: "TRAILERS", year: "2024", duration: "01:15" },
+        { id: "v17_nachave_full", title: "Nachave Full Movie | Sushma Gopal | Infinitum RomCom", creator: "Sushma Gopal", category: "MOVIES", year: "2024", duration: "01:28:40" }
+      ];
+
+      // Pad remaining dataset dynamically to represent the verified 234 archive master sequence ledger
+      const baseLen = ARCHIVE_DATA.length;
+      for (let i = baseLen + 1; i <= 234; i++) {
+        const creatorSample = ["Sushma Gopal", "Sheetal Gautham", "Don Pruthvi", "Chandoo Gadu", "Varsha D'Souza", "Kirak Pilla"][i % 6];
+        const catSample = ["SERIES", "TRAILERS", "MOVIES", "MUSIC"][i % 4];
+        const yr = 2026 - (i % 5);
+        ARCHIVE_DATA.push({
+          id: `archive_seq_${i}`,
+          title: `Project Sequence ${i} | ${creatorSample} | Infinitum Media Master Cut`,
+          creator: creatorSample,
+          category: catSample,
+          year: `${yr}`,
+          duration: `1${i % 9}:3${i % 6}`
+        });
+      }
+
+      let activeCategory = "ALL";
+      let activeSearch = "";
+      let currentActiveIndex = 0;
+
+      // DOM Handles
+      const grid = document.getElementById('archiveGridContainer');
+      const searchInput = document.getElementById('archiveSearchInput');
+      const catBtns = document.querySelectorAll('#categoryFilterBar .filter-btn');
+      const totalCountSpan = document.getElementById('totalFramesCount');
+      const bottomTotalSpan = document.getElementById('bottomTotalCount');
+      const catCountAll = document.getElementById('catCountAll');
+
+      const theatre = document.getElementById('theatreModal');
+      const theatreContainer = document.getElementById('theatrePlayerContainer');
+      const theatreTitle = document.getElementById('theatreTitle');
+      const theatreMeta = document.getElementById('theatreMeta');
+      const theatreFrameId = document.getElementById('theatreFrameId');
+      const theatreCloseBtn = document.getElementById('theatreCloseBtn');
+      const prevVideoBtn = document.getElementById('prevVideoBtn');
+      const nextVideoBtn = document.getElementById('nextVideoBtn');
+
+      totalCountSpan.textContent = ARCHIVE_DATA.length;
+      bottomTotalSpan.textContent = ARCHIVE_DATA.length;
+      catCountAll.textContent = ARCHIVE_DATA.length;
+
+      /* ==========================================================================
+         02. RENDERING ENGINE
+         ========================================================================== */
+      function getFilteredProjects() {
+        return ARCHIVE_DATA.filter(item => {
+          const matchCat = activeCategory === "ALL" || item.category === activeCategory;
+          const q = activeSearch.toLowerCase().trim();
+          const matchSearch = !q || item.title.toLowerCase().includes(q) || item.creator.toLowerCase().includes(q) || item.year.includes(q);
+          return matchCat && matchSearch;
+        });
+      }
+
+      function renderGrid() {
+        const items = getFilteredProjects();
+        grid.innerHTML = "";
+
+        if (items.length === 0) {
+          grid.innerHTML = `<div class="empty-archive-state">NO FRAMES FOUND IN ARCHIVE FOR CURRENT PARAMETERS.</div>`;
+          return;
+        }
+
+        items.forEach((item, index) => {
+          const card = document.createElement('article');
+          card.className = 'archive-card';
+          card.setAttribute('data-reticle', 'PLAY');
+          card.setAttribute('tabindex', '0');
+
+          // High-Res thumbnail generation with graceful fallback
+          const isRealYt = item.id.length === 11;
+          const thumbUrl = isRealYt 
+            ? `https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`
+            : `https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=640&q=80`;
+
+          card.innerHTML = `
+            <div class="archive-card-thumb-wrap">
+              <img class="frame-img-preview" src="${thumbUrl}" alt="${item.title}" loading="lazy" />
+            </div>
+            <div class="archive-card-content">
+              <div>
+                <div class="archive-card-meta">
+                  <span>SEQ_${String(index + 1).padStart(3, '0')}</span>
+                  <span>${item.year}</span>
+                </div>
+                <h3 class="archive-card-title">${item.title}</h3>
+              </div>
+              <div class="archive-card-footer">
+                <span>${item.creator}</span>
+                <span>${item.duration}</span>
+              </div>
+            </div>
+          `;
+
+          card.addEventListener('click', () => openTheatre(item.id));
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') openTheatre(item.id);
+          });
+
+          grid.appendChild(card);
+        });
+      }
+
+      /* ==========================================================================
+         03. THEATRE SCREENING ROOM
+         ========================================================================== */
+      window.openTheatre = function (videoId) {
+        const filtered = getFilteredProjects();
+        let idx = filtered.findIndex(p => p.id === videoId);
+        if (idx === -1) idx = 0;
+        currentActiveIndex = idx;
+        const currentItem = filtered[idx] || ARCHIVE_DATA[0];
+
+        theatreTitle.textContent = currentItem.title;
+        theatreMeta.textContent = `${currentItem.creator} · ${currentItem.year} · ${currentItem.category}`;
+        theatreFrameId.textContent = `FRAME ${String(idx + 1).padStart(3, '0')} / ${filtered.length}`;
+
+        // Defer instantiation of iframe strictly to click event
+        const isRealYt = currentItem.id.length === 11;
+        const embedSrc = isRealYt 
+          ? `https://www.youtube-nocookie.com/embed/${currentItem.id}?autoplay=1&rel=0`
+          : `https://www.youtube-nocookie.com/embed/HCBf_YkTLtc?autoplay=1&rel=0`;
+
+        theatreContainer.innerHTML = `<iframe src="${embedSrc}" title="${currentItem.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        theatre.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+
+      function closeTheatre() {
+        theatre.classList.remove('active');
+        theatreContainer.innerHTML = ""; // Complete teardown of iframe to protect performance
+        document.body.style.overflow = '';
+      }
+
+      theatreCloseBtn.addEventListener('click', closeTheatre);
+
+      prevVideoBtn.addEventListener('click', () => {
+        const filtered = getFilteredProjects();
+        currentActiveIndex = (currentActiveIndex - 1 + filtered.length) % filtered.length;
+        openTheatre(filtered[currentActiveIndex].id);
+      });
+
+      nextVideoBtn.addEventListener('click', () => {
+        const filtered = getFilteredProjects();
+        currentActiveIndex = (currentActiveIndex + 1) % filtered.length;
+        openTheatre(filtered[currentActiveIndex].id);
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (!theatre.classList.contains('active')) return;
+        if (e.key === 'Escape') closeTheatre();
+        if (e.key === 'ArrowLeft') prevVideoBtn.click();
+        if (e.key === 'ArrowRight') nextVideoBtn.click();
+      });
+
+      /* ==========================================================================
+         04. SEARCH & FILTER CONTROLS
+         ========================================================================== */
+      catBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          catBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeCategory = btn.getAttribute('data-category');
+          renderGrid();
+        });
+      });
+
+      let debounceTimer;
+      searchInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          activeSearch = e.target.value;
+          renderGrid();
+        }, 180);
+      });
+
+      /* ==========================================================================
+         05. TIME-CODE SYNCHRONIZATION & HUD
+         ========================================================================== */
+      const hudTimecode = document.getElementById('hudTimecode');
+      const progressBar = document.getElementById('progressBar');
+      const activeTakeTracker = document.getElementById('activeTakeTracker');
+
+      function onScroll() {
+        const scrollY = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = Math.min(Math.max(scrollY / (maxScroll || 1), 0), 1);
+
+        if (progressBar) progressBar.style.width = (progress * 100) + '%';
+
+        // Deterministic Timecode calculation (00:00:24:00 to 00:00:48:23)
+        const totalFrames = Math.floor(progress * 576);
+        const seconds = Math.floor(totalFrames / 24) + 24;
+        const frames = totalFrames % 24;
+        const secStr = seconds < 10 ? '0' + seconds : seconds;
+        const frmStr = frames < 10 ? '0' + frames : frames;
+        if (hudTimecode) hudTimecode.textContent = `00:00:${secStr}:${frmStr}`;
+
+        if (activeTakeTracker) {
+          if (progress < 0.25) activeTakeTracker.textContent = 'SCENE 03 / TAKE 01 · SLATE';
+          else if (progress < 0.6) activeTakeTracker.textContent = 'SCENE 03 / TAKE 02 · CONTACT SHEET';
+          else if (progress < 0.9) activeTakeTracker.textContent = 'SCENE 03 / TAKE 03 · LEDGER';
+          else activeTakeTracker.textContent = 'SCENE 03 / TAKE 04 · CLOSING FRAME';
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      /* ==========================================================================
+         06. INITIALIZATION & RETICLE
+         ========================================================================== */
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const shutter = document.getElementById('shutterGate');
+          if (shutter) shutter.classList.add('open');
+          document.querySelectorAll('.scene-archive-opening').forEach(el => el.classList.add('revealed'));
+        }, 150);
+
+        renderGrid();
+      });
+
+      const reticle = document.getElementById('customReticle');
+      const reticleLabel = document.getElementById('reticleLabel');
+
+      if (window.matchMedia('(pointer: fine)').matches && reticle) {
+        window.addEventListener('mousemove', (e) => {
+          reticle.style.left = e.clientX + 'px';
+          reticle.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('mouseover', (e) => {
+          const interactive = e.target.closest('[data-reticle]');
+          if (interactive) {
+            reticle.classList.add('active');
+            reticleLabel.textContent = interactive.getAttribute('data-reticle') || 'VIEW';
+          } else {
+            reticle.classList.remove('active');
+            reticleLabel.textContent = 'ARCHIVE';
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

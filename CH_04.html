@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Chinthala Vijay Kumar | Video Editor & Cinematographer</title>
+  <meta name="description" content="Contact Chinthala Vijay Kumar for video editing, cinematography, digital content, short films, web series, and visual storytelling projects." />
+  
+  <!-- Open Graph Metadata -->
+  <meta property="og:title" content="Contact — Chinthala Vijay Kumar | Video Editor & Cinematographer" />
+  <meta property="og:description" content="From raw footage to final frame — let's build the next story. Available for select film and digital projects." />
+  <meta property="og:type" content="website" />
+
+  <!-- Typography Preloading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       01. SYSTEM DESIGN TOKENS (LOCKED ACROSS ALL 4 CHAPTERS)
+       ========================================================================== */
+    :root {
+      --bg-void: #070708;
+      --bg-plate: #0d0e12;
+      --bg-surface: #14151b;
+      --border-hairline: rgba(244, 244, 246, 0.08);
+      --border-focus: rgba(244, 244, 246, 0.35);
+      --border-accent: rgba(229, 72, 51, 0.4);
+      --text-emulsion: #f4f4f6;
+      --text-cold: #d4d5dc;
+      --text-muted: #6b6d76;
+      --accent-rec: #e54833;
+
+      --font-display: 'Cinzel', Georgia, serif;
+      --font-grotesk: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --ease-optical: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-shutter: cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background-color: var(--bg-void);
+      color: var(--text-cold);
+      font-family: var(--font-grotesk);
+      font-size: 16px;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      background-color: var(--bg-void);
+      min-height: 100vh;
+      position: relative;
+      cursor: crosshair;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button {
+      background: none;
+      border: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       02. 35MM FILM GRAIN & OPTICAL SHUTTER
+       ========================================================================== */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 990;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .shutter-gate {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-void);
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.9s var(--ease-optical);
+    }
+
+    .shutter-gate.open {
+      transform: translateY(-100%);
+    }
+
+    .shutter-cut-line {
+      height: 1px;
+      width: 100%;
+      background: rgba(244, 244, 246, 0.18);
+    }
+
+    /* ==========================================================================
+       03. CUSTOM VIEWFINDER RETICLE CURSOR
+       ========================================================================== */
+    .reticle-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 32px;
+      height: 32px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 999;
+      transition: width 0.25s var(--ease-optical), height 0.25s var(--ease-optical);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reticle-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--text-emulsion);
+      border-radius: 50%;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .reticle-line {
+      position: absolute;
+      background: rgba(244, 244, 246, 0.35);
+    }
+    .reticle-line.h { width: 100%; height: 1px; left: 0; }
+    .reticle-line.v { height: 100%; width: 1px; top: 0; }
+
+    .reticle-label {
+      position: absolute;
+      top: calc(100% + 4px);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      color: var(--accent-rec);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .reticle-cursor.active {
+      width: 52px;
+      height: 52px;
+    }
+    .reticle-cursor.active .reticle-label { opacity: 1; }
+    .reticle-cursor.active .reticle-dot {
+      transform: scale(1.6);
+      background: var(--accent-rec);
+    }
+
+    @media (pointer: coarse) {
+      .reticle-cursor { display: none !important; }
+      body { cursor: auto; }
+    }
+
+    /* ==========================================================================
+       04. STUDIO HUD (TOP & BOTTOM BARS)
+       ========================================================================== */
+    .studio-hud-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background: rgba(7, 7, 8, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-hairline);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3.5rem);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-emulsion);
+      font-weight: 500;
+    }
+
+    .rec-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-rec);
+      box-shadow: 0 0 8px rgba(229, 72, 51, 0.7);
+    }
+
+    .hud-title {
+      color: var(--text-emulsion);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .hud-right-nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.75rem, 2vw, 2rem);
+    }
+
+    .hud-link {
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+      text-transform: uppercase;
+    }
+    .hud-link:hover, .hud-link.active {
+      color: var(--text-emulsion);
+    }
+
+    .studio-hud-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background: rgba(7, 7, 8, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-hairline);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3.5rem);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .hud-progress-bar {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      height: 1px;
+      width: 0%;
+      background: var(--accent-rec);
+      box-shadow: 0 0 6px rgba(229, 72, 51, 0.7);
+      transition: width 0.1s linear;
+    }
+
+    /* ==========================================================================
+       05. STRUCTURAL UTILITIES
+       ========================================================================== */
+    .film-canvas {
+      position: relative;
+      width: 100%;
+      padding-top: 48px;
+      padding-bottom: 80px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .editorial-boundary {
+      width: 100%;
+      padding: 0 clamp(1.5rem, 5vw, 5rem);
+    }
+
+    .tech-slate-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-slate-tag::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--border-accent);
+    }
+
+    .mask-gate {
+      overflow: hidden;
+      display: block;
+    }
+
+    .mask-gate-inner {
+      display: block;
+      transform: translateY(105%);
+      transition: transform 1.05s var(--ease-optical);
+    }
+
+    .revealed .mask-gate-inner {
+      transform: translateY(0%);
+    }
+
+    /* ==========================================================================
+       SCENE 01 — HERO INTAKE TITLE SEQUENCE
+       ========================================================================== */
+    .scene-contact-hero {
+      min-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: clamp(3rem, 7vh, 6rem);
+      padding-bottom: clamp(2rem, 5vh, 4rem);
+      border-bottom: 1px solid var(--border-hairline);
+      position: relative;
+    }
+
+    .hero-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .meta-data-line {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-data-line strong {
+      color: var(--text-emulsion);
+      font-weight: 400;
+    }
+
+    .hero-monumental-headline {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 9.5vw, 9.5rem);
+      font-weight: 700;
+      line-height: 0.92;
+      color: var(--text-emulsion);
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      margin: 2rem 0;
+    }
+
+    .hero-monumental-headline .word-project {
+      color: var(--text-emulsion);
+      display: block;
+    }
+
+    .hero-subline-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .hero-subline {
+      font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+      color: var(--text-cold);
+      font-weight: 300;
+      max-width: 44ch;
+      line-height: 1.6;
+    }
+
+    /* Availability Indicator */
+    .availability-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      color: var(--text-cold);
+      text-transform: uppercase;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-plate);
+      padding: 0.65rem 1.25rem;
+    }
+
+    .beacon-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-rec);
+      animation: pulseBeacon 2.6s infinite ease-in-out;
+    }
+
+    @keyframes pulseBeacon {
+      0%, 100% { opacity: 0.45; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px var(--accent-rec); }
+    }
+
+    /* ==========================================================================
+       SCENE 02 — DIRECT EMAIL ACCESS & TRANSMISSION LEDGER
+       ========================================================================== */
+    .scene-direct-access {
+      padding: clamp(60px, 10vh, 120px) 0;
+      border-bottom: 1px solid var(--border-hairline);
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: baseline;
+    }
+
+    .direct-email-anchor {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3.4vw, 2.8rem);
+      color: var(--text-emulsion);
+      letter-spacing: -0.015em;
+      border-bottom: 1px solid var(--border-hairline);
+      padding-bottom: 0.5rem;
+      display: inline-block;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .direct-email-anchor:hover {
+      border-color: var(--text-emulsion);
+      transform: translateX(4px);
+    }
+
+    .copy-action-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .copy-btn {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      border: 1px solid var(--border-hairline);
+      padding: 0.5rem 1rem;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      color: var(--text-emulsion);
+      border-color: var(--text-emulsion);
+    }
+
+    .copy-status-msg {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      color: var(--accent-rec);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .copy-status-msg.active {
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       SCENE 03 — PRODUCTION INTAKE SHEET (FORM)
+       ========================================================================== */
+    .scene-production-intake {
+      padding: clamp(70px, 12vh, 140px) 0;
+      position: relative;
+    }
+
+    .intake-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: clamp(3rem, 6vw, 6rem);
+    }
+
+    .intake-meta-panel {
+      position: sticky;
+      top: 90px;
+      align-self: start;
+    }
+
+    .intake-guideline-p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin-top: 1.5rem;
+      max-width: 38ch;
+    }
+
+    /* Clean Underline-Based Production Form */
+    .production-intake-form {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+    }
+
+    .form-field-group {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      transition: color 0.2s ease;
+    }
+
+    .field-input, .field-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 0.75rem 0;
+      color: var(--text-emulsion);
+      font-family: var(--font-grotesk);
+      font-size: 1.15rem;
+      font-weight: 400;
+      border-radius: 0;
+      transition: border-color 0.25s var(--ease-optical);
+    }
+
+    .field-textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .field-input:focus, .field-textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+
+    .field-input:focus + .field-label,
+    .field-textarea:focus + .field-label {
+      color: var(--text-emulsion);
+    }
+
+    .field-error-hint {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.14em;
+      color: var(--accent-rec);
+      margin-top: 6px;
+      display: none;
+      text-transform: uppercase;
+    }
+
+    .field-error-hint.visible {
+      display: block;
+    }
+
+    /* Refined Editorial Project Type Selector */
+    .project-type-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .project-type-chip {
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .project-type-chip:hover {
+      border-color: var(--border-focus);
+      color: var(--text-cold);
+    }
+
+    .project-type-chip.selected {
+      border-color: var(--accent-rec);
+      color: var(--text-emulsion);
+      background: var(--bg-surface);
+    }
+
+    .chip-code {
+      font-size: 9px;
+      color: var(--accent-rec);
+    }
+
+    /* Submit Action Line */
+    .form-action-dock {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding-top: 1rem;
+    }
+
+    .btn-send-project {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--text-emulsion);
+      color: var(--bg-void);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 1.15rem 2.5rem;
+      border: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-send-project:hover {
+      background: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .transmission-status-slate {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--accent-rec);
+      text-transform: uppercase;
+    }
+
+    /* ==========================================================================
+       SCENE 04 — THE FINAL CINEMATIC FRAME (2.39:1 CINEMASCOPE)
+       ========================================================================== */
+    .scene-final-frame {
+      padding: clamp(70px, 12vh, 140px) 0;
+      border-top: 1px solid var(--border-hairline);
+      position: relative;
+    }
+
+    .final-anamorphic-box {
+      width: 100%;
+      aspect-ratio: 2.39 / 1;
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.2s var(--ease-optical);
+    }
+
+    .scene-final-frame.revealed .final-anamorphic-box {
+      clip-path: inset(0 0% 0 0);
+    }
+
+    .final-frame-art {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(110%);
+      transform: scale(1.06);
+      transition: transform 1.2s var(--ease-optical), filter 0.6s ease;
+    }
+
+    .final-anamorphic-box:hover .final-frame-art {
+      transform: scale(1.02);
+      filter: grayscale(80%) contrast(115%);
+    }
+
+    /* Corner Viewfinder Marks */
+    .vf-marks {
+      position: absolute;
+      inset: 16px;
+      pointer-events: none;
+      border: 1px solid rgba(244, 244, 246, 0.05);
+    }
+    .vf-c {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: rgba(244, 244, 246, 0.4);
+    }
+    .vf-c-tl { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
+    .vf-c-tr { top: 0; right: 0; border-top: 1px solid; border-right: 1px solid; }
+    .vf-c-bl { bottom: 0; left: 0; border-bottom: 1px solid; border-left: 1px solid; }
+    .vf-c-br { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+
+    .final-frame-slate-lead {
+      position: absolute;
+      bottom: 24px;
+      left: 28px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: rgba(244, 244, 246, 0.6);
+      text-transform: uppercase;
+      z-index: 5;
+    }
+
+    .monumental-final-statement {
+      margin-top: 4.5rem;
+    }
+
+    .final-statement-text {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 7vw, 6.8rem);
+      font-weight: 700;
+      line-height: 0.94;
+      color: var(--text-emulsion);
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+    }
+
+    /* ==========================================================================
+       SCENE 05 — THE END CREDITS & TIMELINE PLAYHEAD TERMINUS
+       ========================================================================== */
+    .scene-end-credits {
+      padding: clamp(80px, 14vh, 160px) 0 60px;
+      border-top: 1px solid var(--border-hairline);
+      position: relative;
+    }
+
+    .credits-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 5rem;
+    }
+
+    .credit-title-block h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+      font-weight: 700;
+      color: var(--text-emulsion);
+      letter-spacing: -0.015em;
+      text-transform: uppercase;
+      line-height: 1.05;
+      margin-bottom: 0.75rem;
+    }
+
+    .credit-title-block span {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .credit-col-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: var(--accent-rec);
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .credit-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+    }
+
+    .credit-nav-list a {
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+    .credit-nav-list a:hover {
+      color: var(--text-emulsion);
+    }
+
+    /* Final Playhead Terminus Track */
+    .playhead-terminus-track {
+      position: relative;
+      width: 100%;
+      height: 1px;
+      background: var(--border-hairline);
+      margin: 4rem 0 2rem;
+    }
+
+    .playhead-dot-stop {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-rec);
+      transform: translate(50%, -50%);
+      box-shadow: 0 0 8px var(--accent-rec);
+    }
+
+    .terminus-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Responsive Adaptation */
+    @media (max-width: 900px) {
+      .intake-layout-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .intake-meta-panel {
+        position: static;
+      }
+      .scene-direct-access {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .credits-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .hero-meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mask-gate-inner {
+        transform: none !important;
+        transition: none !important;
+      }
+      .shutter-gate {
+        display: none !important;
+      }
+      .reticle-cursor {
+        display: none !important;
+      }
+      .final-anamorphic-box {
+        clip-path: none !important;
+      }
+      * {
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 35mm Emulsion Noise Filter -->
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- Optical Cut Shutter Entrance -->
+  <div class="shutter-gate" id="shutterGate">
+    <div class="shutter-cut-line"></div>
+    <div class="shutter-cut-line"></div>
+  </div>
+
+  <!-- Viewfinder Reticle Cursor (Desktop) -->
+  <div class="reticle-cursor" id="customReticle" aria-hidden="true">
+    <div class="reticle-line h"></div>
+    <div class="reticle-line v"></div>
+    <div class="reticle-dot"></div>
+    <span class="reticle-label" id="reticleLabel">PROJECT</span>
+  </div>
+
+  <!-- STUDIO HUD: TOP BAR -->
+  <header class="studio-hud-top" role="banner">
+    <div class="rec-badge">
+      <span class="rec-dot" aria-hidden="true"></span>
+      <span>REC ● CH_04</span>
+    </div>
+
+    <div class="hud-title">CHINTHALA VIJAY KUMAR</div>
+
+    <div class="hud-right-nav">
+      <span id="hudTimecode" aria-label="Timeline Timecode">TC 00:00:00:01</span>
+      <nav aria-label="Chapter Sequences">
+        <a href="index.html" class="hud-link" data-reticle="CUT">CH_01</a>
+        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
+        <a href="about.html" class="hud-link" data-reticle="CUT">CH_02</a>
+        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
+        <a href="archive.html" class="hud-link" data-reticle="CUT">CH_03</a>
+        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
+        <a href="contact.html" class="hud-link active" data-reticle="STAY">CH_04</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN EDITORIAL STAGE -->
+  <main class="film-canvas" id="contactStage">
+
+    <!-- ======================================================================
+         SCENE 01 — HERO INTAKE TITLE SEQUENCE
+         ====================================================================== -->
+    <section class="scene-contact-hero editorial-boundary" aria-label="Hero Title">
+      <div class="hero-meta-grid">
+        <div class="meta-data-line">
+          <span>CREATIVE DISCIPLINE</span>
+          <strong>VIDEO EDITOR / CINEMATOGRAPHER</strong>
+        </div>
+        <div class="meta-data-line" style="text-align: right;">
+          <span>CURRENT BASE</span>
+          <strong>HYDERABAD, TELANGANA, INDIA</strong>
+        </div>
+      </div>
+
+      <div class="mask-gate">
+        <h1 class="hero-monumental-headline mask-gate-inner">
+          START THE<br />
+          <span class="word-project">NEXT PROJECT.</span>
+        </h1>
+      </div>
+
+      <div class="hero-subline-container">
+        <p class="hero-subline">
+          From raw footage to final frame — let's turn the sequence into something worth watching.
+        </p>
+
+        <div class="availability-badge" data-reticle="AVAILABLE">
+          <span class="beacon-dot"></span>
+          <span>CURRENTLY AVAILABLE FOR SELECT PROJECTS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 02 — DIRECT EMAIL ACCESS & TRANSMISSION LEDGER
+         ====================================================================== -->
+    <section class="scene-direct-access editorial-boundary" aria-label="Direct Contact">
+      <div>
+        <span class="tech-slate-tag">DIRECT TRANSMISSION · PRIMARY INBOX</span>
+        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 32ch;">
+          For direct pitches, scripts, raw cuts, or production timelines.
+        </p>
+      </div>
+
+      <div>
+        <a href="mailto:chinthalavk040@gmail.com" class="direct-email-anchor" data-reticle="MAIL">
+          chinthalavk040@gmail.com
+        </a>
+
+        <div class="copy-action-row">
+          <button class="copy-btn" id="copyEmailBtn" data-reticle="COPY">
+            [COPY ADDRESS]
+          </button>
+          <span class="copy-status-msg" id="copyStatusMsg">COPIED TO CLIPBOARD</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 03 — PRODUCTION INTAKE SHEET (FORM)
+         ====================================================================== -->
+    <section class="scene-production-intake editorial-boundary" aria-label="Production Intake Form">
+      <div class="intake-layout-grid">
+        
+        <!-- Sticky Meta Slate -->
+        <aside class="intake-meta-panel">
+          <span class="tech-slate-tag">PROJECT INTAKE / 01</span>
+          <h2 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--text-emulsion); text-transform: uppercase;">
+            TELL ME ABOUT<br />THE PROJECT
+          </h2>
+          <p class="intake-guideline-p">
+            Whether it is an episodic web series, a narrative short film, a brand campaign, or high-tempo digital content—share the footage specs, timeline, and directorial intent.
+          </p>
+        </aside>
+
+        <!-- Intake Form -->
+        <form class="production-intake-form" id="intakeForm" novalidate>
+          
+          <!-- Name Field -->
+          <div class="form-field-group">
+            <label class="field-label" for="userName">01 · YOUR NAME / PRODUCTION TEAM *</label>
+            <input class="field-input" type="text" id="userName" name="name" placeholder="Enter your name or team" required data-reticle="TYPE" />
+            <span class="field-error-hint" id="nameError">PLEASE ENTER YOUR NAME</span>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-field-group">
+            <label class="field-label" for="userEmail">02 · DIRECT CONTACT EMAIL *</label>
+            <input class="field-input" type="email" id="userEmail" name="email" placeholder="email@domain.com" required data-reticle="TYPE" />
+            <span class="field-error-hint" id="emailError">PLEASE ENTER A VALID EMAIL</span>
+          </div>
+
+          <!-- Project Type Selector -->
+          <div class="form-field-group">
+            <label class="field-label">03 · PROJECT CLASSIFICATION *</label>
+            <input type="hidden" id="selectedProjectType" name="project_type" value="VIDEO EDITING" />
+            
+            <div class="project-type-matrix" role="radiogroup" aria-label="Project Classification">
+              <div class="project-type-chip selected" data-value="VIDEO EDITING" data-reticle="SELECT" role="radio" aria-checked="true">
+                <span>VIDEO EDITING</span>
+                <span class="chip-code">01</span>
+              </div>
+              <div class="project-type-chip" data-value="CINEMATOGRAPHY" data-reticle="SELECT" role="radio" aria-checked="false">
+                <span>CINEMATOGRAPHY</span>
+                <span class="chip-code">02</span>
+              </div>
+              <div class="project-type-chip" data-value="WEB SERIES" data-reticle="SELECT" role="radio" aria-checked="false">
+                <span>WEB SERIES</span>
+                <span class="chip-code">03</span>
+              </div>
+              <div class="project-type-chip" data-value="SHORT FILM" data-reticle="SELECT" role="radio" aria-checked="false">
+                <span>SHORT FILM</span>
+                <span class="chip-code">04</span>
+              </div>
+              <div class="project-type-chip" data-value="DIGITAL CONTENT" data-reticle="SELECT" role="radio" aria-checked="false">
+                <span>DIGITAL CONTENT</span>
+                <span class="chip-code">05</span>
+              </div>
+              <div class="project-type-chip" data-value="MUSIC VIDEO" data-reticle="SELECT" role="radio" aria-checked="false">
+                <span>MUSIC VIDEO</span>
+                <span class="chip-code">06</span>
+              </div>
+              <div class="project-type-chip" data-value="BRAND FILM" data-reticle="SELECT" role="radio" aria-checked="false">
+                <span>BRAND FILM</span>
+                <span class="chip-code">07</span>
+              </div>
+              <div class="project-type-chip" data-value="OTHER" data-reticle="SELECT" role="radio" aria-checked="false">
+                <span>OTHER FORMAT</span>
+                <span class="chip-code">08</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project / Production Name -->
+          <div class="form-field-group">
+            <label class="field-label" for="projectName">04 · PROJECT / CHANNEL / PRODUCTION HOUSE</label>
+            <input class="field-input" type="text" id="projectName" name="project_name" placeholder="Title or production identity" data-reticle="TYPE" />
+          </div>
+
+          <!-- Message Field -->
+          <div class="form-field-group">
+            <label class="field-label" for="projectMessage">05 · THE BRIEF / SCOPE / TIMELINE *</label>
+            <textarea class="field-textarea" id="projectMessage" name="message" placeholder="Tell me what you're working on, expected deliverables, and timeline..." required data-reticle="TYPE"></textarea>
+            <span class="field-error-hint" id="messageError">TELL ME A LITTLE ABOUT THE PROJECT</span>
+          </div>
+
+          <!-- Reference Link -->
+          <div class="form-field-group">
+            <label class="field-label" for="projectRef">06 · FOOTAGE / REFERENCE / DRIVE LINK</label>
+            <input class="field-input" type="url" id="projectRef" name="reference_link" placeholder="https://drive.google.com/... or YouTube link" data-reticle="TYPE" />
+          </div>
+
+          <!-- Action & Status -->
+          <div class="form-action-dock">
+            <button type="submit" class="btn-send-project" id="submitBtn" data-reticle="SEND">
+              SEND PROJECT →
+            </button>
+            <div class="transmission-status-slate" id="formStatusSlate" aria-live="polite"></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 04 — THE FINAL CINEMATIC FRAME (2.39:1 CINEMASCOPE)
+         ====================================================================== -->
+    <section class="scene-final-frame editorial-boundary" aria-label="Closing Visual Frame">
+      <span class="tech-slate-tag">FINAL FRAME · 2.39:1 ANAMORPHIC GATE</span>
+      
+      <div class="final-anamorphic-box" data-reticle="VIEW">
+        <!-- High-contrast monochrome cinematography frame asset slot -->
+        <img 
+          class="final-frame-art" 
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 502'%3E%3Crect width='1200' height='502' fill='%230d0e12'/%3E%3Cpath d='M0 502L400 320l250 80 550-240v342z' fill='%2313141b'/%3E%3Ccircle cx='600' cy='220' r='140' fill='%23181a24'/%3E%3Ctext x='50%25' y='50%25' font-family='monospace' font-size='14' fill='%236b6d76' text-anchor='middle' letter-spacing='3'%3E%5B CINEMATOGRAPHY STILL · RAW 35MM EXPOSURE %5D%3C/text%3E%3C/svg%3E" 
+          alt="Cinematic still frame by Chinthala Vijay Kumar" 
+          loading="lazy" 
+        />
+
+        <div class="vf-marks" aria-hidden="true">
+          <div class="vf-c vf-c-tl"></div>
+          <div class="vf-c vf-c-tr"></div>
+          <div class="vf-c vf-c-bl"></div>
+          <div class="vf-c vf-c-br"></div>
+        </div>
+
+        <div class="final-frame-slate-lead">
+          FRAME 0234 · POST-PRODUCTION WRAP · 24.00 FPS
+        </div>
+      </div>
+
+      <div class="monumental-final-statement">
+        <div class="final-statement-text">
+          THE NEXT FRAME<br />IS YOURS.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 05 — THE END CREDITS & TIMELINE PLAYHEAD TERMINUS
+         ====================================================================== -->
+    <section class="scene-end-credits editorial-boundary" aria-label="End Credits">
+      <div class="credits-grid">
+        <div class="credit-title-block">
+          <h3>CHINTHALA<br />VIJAY KUMAR</h3>
+          <span>VIDEO EDITOR · CINEMATOGRAPHER</span>
+        </div>
+
+        <div>
+          <div class="credit-col-title">NAVIGATION SEQUENCE</div>
+          <ul class="credit-nav-list">
+            <li><a href="index.html" data-reticle="CUT">CH_01 · ENTER THE EDIT</a></li>
+            <li><a href="about.html" data-reticle="CUT">CH_02 · THE PERSON BEHIND THE FRAME</a></li>
+            <li><a href="archive.html" data-reticle="CUT">CH_03 · THE ARCHIVE</a></li>
+            <li><a href="contact.html" style="color: var(--text-emulsion);" data-reticle="STAY">CH_04 · START THE NEXT PROJECT</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="credit-col-title">TRANSMISSION</div>
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 1.8;">
+            DIRECT DISPATCH:<br />
+            <a href="mailto:chinthalavk040@gmail.com" style="color: var(--text-cold);" data-reticle="MAIL">chinthalavk040@gmail.com</a><br /><br />
+            HYDERABAD, INDIA
+          </div>
+        </div>
+      </div>
+
+      <!-- Playhead Finished Marker -->
+      <div class="playhead-terminus-track" aria-hidden="true">
+        <div class="playhead-dot-stop"></div>
+      </div>
+
+      <div class="terminus-meta-row">
+        <div>© 2026 CHINTHALA VIJAY KUMAR. ALL FRAMES RESERVED.</div>
+        <div>[REC ●] TC 00:00:00:00</div>
+        <div>END OF SEQUENCE</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STUDIO HUD: BOTTOM TRACK -->
+  <footer class="studio-hud-bottom" role="contentinfo">
+    <div class="hud-progress-bar" id="progressBar"></div>
+    <div>CH_04 / CONTACT</div>
+    <div>PROJECT INTAKE · HYDERABAD, INDIA</div>
+    <div id="takeTracker">SCENE 04 / TAKE 01</div>
+  </footer>
+
+  <!-- SCRIPT ENGINE: FORM VALIDATION, CHIPS, RETICLE & TIME CODE -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Shutter Entrance
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const shutter = document.getElementById('shutterGate');
+          if (shutter) shutter.classList.add('open');
+          document.querySelectorAll('.scene-contact-hero, .scene-final-frame').forEach(el => el.classList.add('revealed'));
+        }, 150);
+      });
+
+      // 2. Custom Viewfinder Reticle Cursor (Desktop)
+      const reticle = document.getElementById('customReticle');
+      const reticleLabel = document.getElementById('reticleLabel');
+
+      if (window.matchMedia('(pointer: fine)').matches && reticle) {
+        window.addEventListener('mousemove', (e) => {
+          reticle.style.left = e.clientX + 'px';
+          reticle.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('mouseover', (e) => {
+          const interactive = e.target.closest('[data-reticle]');
+          if (interactive) {
+            reticle.classList.add('active');
+            reticleLabel.textContent = interactive.getAttribute('data-reticle') || 'ACTION';
+          } else {
+            reticle.classList.remove('active');
+            reticleLabel.textContent = 'PROJECT';
+          }
+        });
+      }
+
+      // 3. Copy Email Direct Interaction
+      const copyBtn = document.getElementById('copyEmailBtn');
+      const copyMsg = document.getElementById('copyStatusMsg');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText('chinthalavk040@gmail.com').then(() => {
+            copyMsg.classList.add('active');
+            setTimeout(() => copyMsg.classList.remove('active'), 2000);
+          }).catch(() => {
+            window.location.href = 'mailto:chinthalavk040@gmail.com';
+          });
+        });
+      }
+
+      // 4. Project Type Chip Matrix Interaction
+      const chips = document.querySelectorAll('.project-type-chip');
+      const hiddenTypeInput = document.getElementById('selectedProjectType');
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          chips.forEach(c => {
+            c.classList.remove('selected');
+            c.setAttribute('aria-checked', 'false');
+          });
+          chip.classList.add('selected');
+          chip.setAttribute('aria-checked', 'true');
+          if (hiddenTypeInput) {
+            hiddenTypeInput.value = chip.getAttribute('data-value');
+          }
+        });
+      });
+
+      // 5. Form Handling & Transmission Pipeline
+      const form = document.getElementById('intakeForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const statusSlate = document.getElementById('formStatusSlate');
+
+      const nameInput = document.getElementById('userName');
+      const emailInput = document.getElementById('userEmail');
+      const messageInput = document.getElementById('projectMessage');
+
+      const nameError = document.getElementById('nameError');
+      const emailError = document.getElementById('emailError');
+      const messageError = document.getElementById('messageError');
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          let valid = true;
+
+          // Name validation
+          if (!nameInput.value.trim()) {
+            nameError.classList.add('visible');
+            valid = false;
+          } else {
+            nameError.classList.remove('visible');
+          }
+
+          // Email validation
+          if (!validateEmail(emailInput.value.trim())) {
+            emailError.classList.add('visible');
+            valid = false;
+          } else {
+            emailError.classList.remove('visible');
+          }
+
+          // Message validation
+          if (!messageInput.value.trim()) {
+            messageError.classList.add('visible');
+            valid = false;
+          } else {
+            messageError.classList.remove('visible');
+          }
+
+          if (!valid) return;
+
+          // Transmission State
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'TRANSMITTING...';
+          statusSlate.textContent = 'CONNECTING DISPATCH GATEWAY...';
+
+          // Simulate production dispatch or integrate EmailJS payload cleanly
+          setTimeout(() => {
+            submitBtn.textContent = 'PROJECT RECEIVED';
+            statusSlate.textContent = 'TRANSMISSION CONFIRMED. I WILL BE IN TOUCH SHORTLY.';
+            statusSlate.style.color = 'var(--text-emulsion)';
+            form.reset();
+            chips[0].click(); // Reset chips
+          }, 1200);
+        });
+      }
+
+      // 6. Scroll Tracking & Deterministic HUD
+      const progressBar = document.getElementById('progressBar');
+      const takeTracker = document.getElementById('takeTracker');
+      const hudTimecode = document.getElementById('hudTimecode');
+
+      function onScroll() {
+        const scrollY = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = Math.min(Math.max(scrollY / (maxScroll || 1), 0), 1);
+
+        if (progressBar) progressBar.style.width = (progress * 100) + '%';
+
+        // Deterministic Timecode update: TC 00:00:00:01 to TC 00:00:00:24
+        const frame = Math.min(Math.floor(progress * 24) + 1, 24);
+        const frameStr = frame < 10 ? '0' + frame : frame;
+        if (hudTimecode) hudTimecode.textContent = `TC 00:00:00:${frameStr}`;
+
+        if (takeTracker) {
+          if (progress < 0.25) takeTracker.textContent = 'SCENE 04 / TAKE 01 · SLATE';
+          else if (progress < 0.65) takeTracker.textContent = 'SCENE 04 / TAKE 02 · INTAKE';
+          else if (progress < 0.85) takeTracker.textContent = 'SCENE 04 / TAKE 03 · FINAL FRAME';
+          else takeTracker.textContent = 'SCENE 04 / TAKE 04 · END CREDITS';
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // 7. Reveal Observer for Frame Gates
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.mask-gate, .scene-final-frame').forEach((el) => observer.observe(el));
+    })();
+  </script>
+</body>
+</html>

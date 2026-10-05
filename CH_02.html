@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CH_02 — THE PERSON BEHIND THE FRAME · CHINTHALA VIJAY KUMAR</title>
+  <meta name="description" content="Chapter 02: The Person Behind the Frame. The cinematography roots, creative philosophy, and career evolution of video editor and cinematographer Chinthala Vijay Kumar." />
+
+  <!-- Typography Preloading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       01. SYSTEM TOKENS (LOCKED DESIGN SYSTEM)
+       ========================================================================== */
+    :root {
+      --bg-void: #070708;
+      --bg-plate: #0d0e12;
+      --bg-surface: #14151b;
+      --border-hairline: rgba(244, 244, 246, 0.08);
+      --border-focus: rgba(244, 244, 246, 0.28);
+      --border-accent: rgba(229, 72, 51, 0.4);
+      --text-emulsion: #f4f4f6;
+      --text-cold: #d4d5dc;
+      --text-muted: #6b6d76;
+      --accent-rec: #e54833;
+
+      --font-display: 'Cinzel', Georgia, serif;
+      --font-grotesk: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --ease-optical: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-shutter: cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background-color: var(--bg-void);
+      color: var(--text-cold);
+      font-family: var(--font-grotesk);
+      font-size: 16px;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      background-color: var(--bg-void);
+      min-height: 100vh;
+      position: relative;
+      cursor: crosshair;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button {
+      background: none;
+      border: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       02. 35MM GRAIN & OPTICAL GATE SHUTTER
+       ========================================================================== */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 990;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .shutter-cut {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-void);
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.85s var(--ease-optical);
+    }
+
+    .shutter-cut.open {
+      transform: translateY(-100%);
+    }
+
+    .shutter-cut-line {
+      height: 1px;
+      width: 100%;
+      background: rgba(244, 244, 246, 0.18);
+    }
+
+    /* ==========================================================================
+       03. CUSTOM VIEWFINDER RETICLE CURSOR
+       ========================================================================== */
+    .reticle-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 32px;
+      height: 32px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 999;
+      transition: width 0.25s var(--ease-optical), height 0.25s var(--ease-optical);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reticle-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--text-emulsion);
+      border-radius: 50%;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .reticle-hairline {
+      position: absolute;
+      background: rgba(244, 244, 246, 0.35);
+    }
+    .reticle-hairline.h { width: 100%; height: 1px; left: 0; }
+    .reticle-hairline.v { height: 100%; width: 1px; top: 0; }
+
+    .reticle-label {
+      position: absolute;
+      top: calc(100% + 4px);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      color: var(--accent-rec);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .reticle-cursor.active {
+      width: 52px;
+      height: 52px;
+    }
+    .reticle-cursor.active .reticle-label { opacity: 1; }
+    .reticle-cursor.active .reticle-dot {
+      transform: scale(1.6);
+      background: var(--accent-rec);
+    }
+
+    @media (pointer: coarse) {
+      .reticle-cursor { display: none !important; }
+      body { cursor: auto; }
+    }
+
+    /* ==========================================================================
+       04. STUDIO HUD (TOP & BOTTOM DOCKS)
+       ========================================================================== */
+    .studio-hud-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background: rgba(7, 7, 8, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-hairline);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3.5rem);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .rec-indicator-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-emulsion);
+      font-weight: 500;
+    }
+
+    .rec-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-rec);
+      box-shadow: 0 0 8px rgba(229, 72, 51, 0.7);
+    }
+
+    .hud-title-slate {
+      color: var(--text-emulsion);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .hud-right-nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(1rem, 2.5vw, 2.5rem);
+    }
+
+    .hud-chapter-link {
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+      text-transform: uppercase;
+    }
+    .hud-chapter-link:hover, .hud-chapter-link.active {
+      color: var(--text-emulsion);
+    }
+
+    .studio-hud-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background: rgba(7, 7, 8, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-hairline);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3.5rem);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .hud-scrub-bar {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      height: 1px;
+      width: 0%;
+      background: var(--accent-rec);
+      box-shadow: 0 0 6px rgba(229, 72, 51, 0.7);
+      transition: width 0.1s linear;
+    }
+
+    /* ==========================================================================
+       05. STRUCTURAL UTILITIES & MASK REVEALS
+       ========================================================================== */
+    .film-canvas {
+      position: relative;
+      width: 100%;
+      padding-top: 48px;
+      padding-bottom: 120px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .editorial-boundary {
+      width: 100%;
+      padding: 0 clamp(1.5rem, 5vw, 5rem);
+    }
+
+    .tech-slate-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-slate-tag::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--border-accent);
+    }
+
+    .mask-gate {
+      overflow: hidden;
+      display: block;
+    }
+
+    .mask-gate-inner {
+      display: block;
+      transform: translateY(105%);
+      transition: transform 1.05s var(--ease-optical);
+    }
+
+    .revealed .mask-gate-inner {
+      transform: translateY(0%);
+    }
+
+    .cinematic-pause {
+      height: clamp(140px, 20vh, 240px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pause-cutline {
+      width: 48px;
+      height: 1px;
+      background: var(--border-hairline);
+    }
+
+    /* ==========================================================================
+       SCENE 01 — THE MONUMENTAL OPENING COMPOSITION (MULTI-PLANE REVEAL)
+       ========================================================================== */
+    .scene-intro-composition {
+      position: relative;
+      min-height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: clamp(2rem, 5vh, 4rem);
+      padding-bottom: clamp(2rem, 5vh, 4rem);
+      border-bottom: 1px solid var(--border-hairline);
+      overflow: hidden;
+    }
+
+    .intro-slate-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+    }
+
+    /* Multi-plane Viewport Stage */
+    .intro-stage {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      align-items: center;
+      gap: clamp(2rem, 5vw, 5rem);
+      margin: auto 0;
+    }
+
+    .intro-typography-plane {
+      position: relative;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .intro-typography-plane h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7.5vw, 6.8rem);
+      font-weight: 700;
+      line-height: 0.94;
+      color: var(--text-emulsion);
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+    }
+
+    .intro-subslate {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-top: 1.75rem;
+      display: block;
+      text-transform: uppercase;
+    }
+
+    /* Editorial Portrait Visual Container (Cinematography Plane) */
+    .intro-portrait-plane {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 480px;
+      justify-self: end;
+    }
+
+    .portrait-viewfinder-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      overflow: hidden;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.2s var(--ease-optical), border-color 0.4s ease;
+    }
+
+    .scene-intro-composition.revealed .portrait-viewfinder-frame {
+      clip-path: inset(0 0% 0 0);
+    }
+
+    .portrait-image-asset {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      filter: grayscale(100%) contrast(110%);
+      transform: scale(1.08);
+      transition: transform 1.4s var(--ease-optical), filter 0.6s ease;
+    }
+
+    .portrait-viewfinder-frame:hover .portrait-image-asset {
+      transform: scale(1.02);
+      filter: grayscale(80%) contrast(115%);
+    }
+
+    /* Subtle Viewfinder Overlays */
+    .vf-overlay {
+      position: absolute;
+      inset: 12px;
+      pointer-events: none;
+      z-index: 6;
+      border: 1px solid rgba(244, 244, 246, 0.04);
+    }
+
+    .vf-bracket {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-color: rgba(244, 244, 246, 0.35);
+    }
+    .vf-b-tl { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
+    .vf-b-tr { top: 0; right: 0; border-top: 1px solid; border-right: 1px solid; }
+    .vf-b-bl { bottom: 0; left: 0; border-bottom: 1px solid; border-left: 1px solid; }
+    .vf-b-br { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+
+    .vf-metadata-tag {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      letter-spacing: 0.16em;
+      color: rgba(244, 244, 246, 0.45);
+      text-transform: uppercase;
+      z-index: 7;
+    }
+
+    .intro-footer-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 1.25rem;
+    }
+
+    /* ==========================================================================
+       SCENE 02 — THE CORE PHILOSOPHICAL STATEMENT & EYE INTERACTION
+       ========================================================================== */
+    .scene-philosophy-statement {
+      padding: clamp(80px, 15vh, 180px) 0;
+      position: relative;
+    }
+
+    .statement-headline-spine {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 6.5vw, 6.2rem);
+      font-weight: 600;
+      line-height: 1.05;
+      color: var(--text-emulsion);
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      max-width: 15ch;
+    }
+
+    .statement-headline-spine .cut-highlight {
+      color: var(--accent-rec);
+      font-style: normal;
+    }
+
+    .statement-narrative-note {
+      margin-top: 3.5rem;
+      margin-left: auto;
+      max-width: 520px;
+      font-size: 15px;
+      color: var(--text-cold);
+      line-height: 1.8;
+      border-left: 1px solid var(--border-hairline);
+      padding-left: 2rem;
+      font-weight: 300;
+    }
+
+    /* ==========================================================================
+       SCENE 03 — BIOGRAPHY & ARCHIVAL DOSSIER
+       ========================================================================== */
+    .scene-biography-dossier {
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: clamp(70px, 12vh, 140px) 0;
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: clamp(3rem, 6vw, 6rem);
+      align-items: start;
+    }
+
+    .dossier-subject-card h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      font-weight: 700;
+      color: var(--text-emulsion);
+      line-height: 1.02;
+      letter-spacing: -0.015em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .dossier-meta-table {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-plate);
+      padding: 1.75rem 2rem;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .meta-pair {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .meta-val {
+      letter-spacing: 0.08em;
+      color: var(--text-cold);
+    }
+
+    .biography-editorial-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+    }
+
+    .bio-block-entry {
+      max-width: 58ch;
+    }
+
+    .bio-era-code {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent-rec);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .bio-headline {
+      font-family: var(--font-grotesk);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--text-emulsion);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.75rem;
+    }
+
+    .bio-paragraph {
+      color: var(--text-cold);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    /* ==========================================================================
+       SCENE 04 — THE CHOREOGRAPHED EVOLUTION: CAMERA TO EDIT
+       ========================================================================== */
+    .scene-craft-metamorphosis {
+      padding: clamp(80px, 14vh, 160px) 0;
+      position: relative;
+    }
+
+    .evolution-stage-slate {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .evolution-filmstrip-gate {
+      position: relative;
+      max-width: 960px;
+      margin: 0 auto;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-plate);
+      padding: 3rem clamp(1.5rem, 4vw, 4rem);
+    }
+
+    .evolution-flow-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .evolution-flow-line::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--border-hairline);
+      z-index: 1;
+    }
+
+    .evolution-node {
+      position: relative;
+      z-index: 2;
+      background: var(--bg-void);
+      border: 1px solid var(--border-hairline);
+      padding: 0.6rem 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+
+    .evolution-node.highlight-cut {
+      border-color: var(--accent-rec);
+      color: var(--text-emulsion);
+      background: var(--bg-surface);
+      box-shadow: 0 0 14px rgba(229, 72, 51, 0.25);
+    }
+
+    .evolution-explanation-text {
+      max-width: 620px;
+      margin: 0 auto;
+      text-align: center;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text-cold);
+      font-weight: 300;
+    }
+
+    /* ==========================================================================
+       SCENE 05 — CHRONOLOGICAL SCRUB TRACK (TIMELINE)
+       ========================================================================== */
+    .scene-career-scrub-track {
+      padding: clamp(80px, 12vh, 160px) 0;
+      position: relative;
+    }
+
+    .scrub-track-sprocket {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-hairline);
+      padding-bottom: 1rem;
+      margin-bottom: 4.5rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+    }
+
+    .scrub-track-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5rem;
+      position: relative;
+    }
+
+    .scrub-track-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 140px;
+      width: 1px;
+      background: var(--border-hairline);
+    }
+
+    .scrub-milestone-frame {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      position: relative;
+    }
+
+    .milestone-year-marker {
+      font-family: var(--font-mono);
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
+      font-weight: 500;
+      color: var(--text-emulsion);
+      letter-spacing: 0.08em;
+      position: relative;
+      padding-top: 6px;
+    }
+
+    .milestone-year-marker::after {
+      content: '';
+      position: absolute;
+      top: 18px;
+      right: -clamp(2rem, 5vw, 5rem);
+      width: 9px;
+      height: 9px;
+      background: var(--bg-void);
+      border: 1px solid var(--text-muted);
+      transform: translate(50%, -50%);
+      z-index: 2;
+    }
+
+    .scrub-milestone-frame.active-era .milestone-year-marker::after {
+      border-color: var(--accent-rec);
+      background: var(--accent-rec);
+      box-shadow: 0 0 10px rgba(229, 72, 51, 0.8);
+    }
+
+    .milestone-content-surface {
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      padding: clamp(2rem, 4vw, 3rem);
+      position: relative;
+    }
+
+    .milestone-take-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent-rec);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .milestone-organization {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--text-emulsion);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .milestone-role {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-cold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .milestone-body {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      max-width: 680px;
+    }
+
+    /* Tamada Projects Credit List */
+    .tamada-credits-strip {
+      margin-top: 2.25rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .credits-caption {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .tamada-credits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .film-credit-entry {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      padding: 0.85rem 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-emulsion);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.2s ease;
+    }
+
+    .film-credit-entry:hover {
+      border-color: var(--border-focus);
+    }
+
+    .film-credit-entry span {
+      color: var(--text-muted);
+      font-size: 9px;
+    }
+
+    /* ==========================================================================
+       SCENE 06 — INFINITUM & THE REVEAL OF CREATORS
+       ========================================================================== */
+    .scene-infinitum-creators {
+      padding: clamp(80px, 14vh, 160px) 0;
+      border-top: 1px solid var(--border-hairline);
+      position: relative;
+    }
+
+    .creators-roster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+
+    .creator-slate-card {
+      background: var(--bg-plate);
+      border: 1px solid var(--border-hairline);
+      padding: 1.75rem 2rem;
+      transition: border-color 0.25s var(--ease-shutter), transform 0.25s var(--ease-shutter);
+      position: relative;
+    }
+
+    .creator-slate-card:hover {
+      border-color: var(--border-focus);
+      transform: translateY(-2px);
+    }
+
+    .creator-sequence-index {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--accent-rec);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .creator-name {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-emulsion);
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .creator-discipline {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ==========================================================================
+       SCENE 07 — "THE WAY I SEE" (KINETIC RHYTHM WORDS)
+       ========================================================================== */
+    .scene-the-way-i-see {
+      padding: clamp(80px, 14vh, 160px) 0;
+      position: relative;
+    }
+
+    .kinetic-words-cascade {
+      display: flex;
+      flex-direction: column;
+      gap: 2vh;
+      margin: 4.5rem 0;
+    }
+
+    .kinetic-rhythm-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(244, 244, 246, 0.05);
+      padding-bottom: 0.85rem;
+    }
+
+    .kinetic-word-anchor {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 7vw, 6.8rem);
+      font-weight: 700;
+      line-height: 0.92;
+      color: rgba(244, 244, 246, 0.22);
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+      transition: color 0.4s var(--ease-optical), transform 0.4s var(--ease-optical);
+    }
+
+    .kinetic-word-anchor:hover {
+      color: var(--text-emulsion);
+      transform: translateX(12px);
+    }
+
+    .kinetic-subtext-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ==========================================================================
+       SCENE 08 — THE PORTRAIT HOLD & CLOSING NARRATIVE
+       ========================================================================== */
+    .scene-portrait-hold-closing {
+      padding: clamp(100px, 16vh, 220px) 0 80px;
+      border-top: 1px solid var(--border-hairline);
+      position: relative;
+    }
+
+    .closing-frame-monolith {
+      margin-bottom: 5rem;
+    }
+
+    .closing-frame-line {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 6vw, 5.5rem);
+      font-weight: 700;
+      color: var(--text-emulsion);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .closing-frame-line.secondary {
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .chapter-exit-director-dock {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .exit-meta-slate {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .exit-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .btn-action-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--text-emulsion);
+      color: var(--bg-void);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 1.1rem 2.2rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .btn-action-primary:hover {
+      background: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .btn-action-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border-hairline);
+      color: var(--text-cold);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 1.1rem 2.2rem;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .btn-action-ghost:hover {
+      border-color: var(--text-emulsion);
+      color: var(--text-emulsion);
+    }
+
+    /* ==========================================================================
+       09. RESPONSIVE ADAPTATION & REDUCED MOTION
+       ========================================================================== */
+    @media (max-width: 960px) {
+      .intro-stage {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .intro-portrait-plane {
+        justify-self: start;
+        max-width: 100%;
+      }
+      .scene-biography-dossier {
+        grid-template-columns: 1fr;
+        gap: 3.5rem;
+      }
+      .scrub-track-container::before {
+        left: 20px;
+      }
+      .scrub-milestone-frame {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding-left: 44px;
+      }
+      .milestone-year-marker::after {
+        left: 20px;
+        right: auto;
+      }
+      .evolution-flow-line {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .evolution-flow-line::before {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mask-gate-inner {
+        transform: none !important;
+        transition: none !important;
+      }
+      .shutter-cut {
+        display: none !important;
+      }
+      .reticle-cursor {
+        display: none !important;
+      }
+      .portrait-viewfinder-frame {
+        clip-path: none !important;
+        transition: none !important;
+      }
+      * {
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Film Grain Emulsion Layer -->
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- Optical Cut Shutter Entrance -->
+  <div class="shutter-cut" id="shutterGate">
+    <div class="shutter-cut-line"></div>
+    <div class="shutter-cut-line"></div>
+  </div>
+
+  <!-- Custom Viewfinder Reticle Cursor (Desktop) -->
+  <div class="reticle-cursor" id="customReticle" aria-hidden="true">
+    <div class="reticle-hairline h"></div>
+    <div class="reticle-hairline v"></div>
+    <div class="reticle-dot"></div>
+    <span class="reticle-label" id="reticleLabel">FOCUS</span>
+  </div>
+
+  <!-- STUDIO HUD: TOP BAR -->
+  <header class="studio-hud-top" role="banner">
+    <div class="rec-indicator-group">
+      <span class="rec-dot" aria-hidden="true"></span>
+      <span>REC ● CH_02</span>
+    </div>
+
+    <div class="hud-title-slate">
+      CHINTHALA VIJAY KUMAR
+    </div>
+
+    <div class="hud-right-nav">
+      <span id="hudTimecode" aria-label="Dynamic Timecode">00:00:12:00</span>
+      <nav aria-label="Chapters Navigation">
+        <a href="index.html" class="hud-chapter-link" data-reticle="CUT">CH_01</a>
+        <span style="color: var(--border-hairline); margin: 0 4px;">/</span>
+        <a href="about.html" class="hud-chapter-link active" data-reticle="STAY">CH_02</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN EDITORIAL STAGE -->
+  <main class="film-canvas" id="mainCanvas">
+
+    <!-- ======================================================================
+         SCENE 01 — THE MONUMENTAL OPENING COMPOSITION (MULTI-PLANE REVEAL)
+         ====================================================================== -->
+    <section class="scene-intro-composition editorial-boundary" aria-label="Chapter Title & Portrait Introduction">
+      <div class="intro-slate-header">
+        <div class="tech-slate-tag">SCENE 02 / TAKE 01 · DOSSIER</div>
+        <span>FRAME 0027 · FOCUS / SUBJECT</span>
+      </div>
+
+      <div class="intro-stage">
+        <!-- Foreground Typographic Plane -->
+        <div class="intro-typography-plane">
+          <div class="mask-gate">
+            <h1 class="mask-gate-inner">
+              THE PERSON<br />BEHIND THE FRAME
+            </h1>
+          </div>
+          <span class="intro-subslate">
+            CHINTHALA VIJAY KUMAR · VIDEO EDITOR / CINEMATOGRAPHER
+          </span>
+        </div>
+
+        <!-- Background Cinematic Portrait Plane -->
+        <div class="intro-portrait-plane">
+          <div class="portrait-viewfinder-frame" id="heroPortraitGate" data-reticle="PORTRAIT">
+            <!-- 
+              ASSET INTEGRATION ARCHITECTURE:
+              The img element is linked directly to the designated portrait slot:
+              /assets/images/vijay/vijay-portrait.webp
+              An inline base64 monochrome portrait placeholder is loaded so layout and 
+              framing are active immediately without broken asset indicators.
+            -->
+            <img 
+              class="portrait-image-asset" 
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 750'%3E%3Crect width='600' height='750' fill='%230d0e12'/%3E%3Cpath d='M300 240c45 0 80-35 80-80s-35-80-80-80-80 35-80 80 35 80 80 80zm0 40c-70 0-180 35-180 110v50h360v-50c0-75-110-110-180-110z' fill='%23191b22'/%3E%3Ctext x='50%25' y='68%25' font-family='monospace' font-size='14' fill='%236b6d76' text-anchor='middle' letter-spacing='2'%3E%5B PORTRAIT ASSET: VIJAY KUMAR %5D%3C/text%3E%3Ctext x='50%25' y='72%25' font-family='monospace' font-size='10' fill='%2344464f' text-anchor='middle' letter-spacing='1.5'%3EASPECT RATIO 4:5 · MONOCHROME GRADE%3C/text%3E%3C/svg%3E" 
+              alt="Cinematic portrait frame of Chinthala Vijay Kumar" 
+              loading="eager"
+            />
+            
+            <!-- Viewfinder Optical Reticles -->
+            <div class="vf-overlay" aria-hidden="true">
+              <div class="vf-bracket vf-b-tl"></div>
+              <div class="vf-bracket vf-b-tr"></div>
+              <div class="vf-bracket vf-b-bl"></div>
+              <div class="vf-bracket vf-b-br"></div>
+            </div>
+            <div class="vf-metadata-tag">4:5 · 35MM OPTICS</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="intro-footer-hud">
+        <span>ASPECT: 4:5 CINEMATIC PORTRAIT</span>
+        <span>HYDERABAD, INDIA</span>
+        <span>PRODUCTION LEDGER</span>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 02 — THE CORE PHILOSOPHICAL STATEMENT & EYE INTERACTION
+         ====================================================================== -->
+    <section class="scene-philosophy-statement editorial-boundary" aria-label="Core Philosophy">
+      <div class="mask-gate">
+        <div class="statement-headline-spine mask-gate-inner">
+          BEFORE THE <span class="cut-highlight">CUT</span>,<br />
+          THERE IS THE EYE.
+        </div>
+      </div>
+
+      <div class="statement-narrative-note">
+        Before an editor cuts, the cinematographer perceives the frame. Before a take becomes a sequence, there is light, lens choice, and composition. Before composition becomes narrative, there is unhurried observation.
+      </div>
+    </section>
+
+    <div class="cinematic-pause" aria-hidden="true"><div class="pause-cutline"></div></div>
+
+    <!-- ======================================================================
+         SCENE 03 — BIOGRAPHY & ARCHIVAL DOSSIER
+         ====================================================================== -->
+    <section class="scene-biography-dossier editorial-boundary" aria-label="Biographical Dossier">
+      <div class="dossier-subject-card">
+        <span class="tech-slate-tag">PRODUCTION DOSSIER · SUBJECT IDENTIFIER</span>
+        <h2>CHINTHALA<br />VIJAY KUMAR</h2>
+        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase;">
+          VIDEO EDITOR / CINEMATOGRAPHER
+        </span>
+
+        <div class="dossier-meta-table">
+          <div class="meta-pair">
+            <span class="meta-label">ARCHIVE DATE</span>
+            <span class="meta-val">30 JANUARY 1995</span>
+          </div>
+          <div class="meta-pair">
+            <span class="meta-label">DISCIPLINE</span>
+            <span class="meta-val">CINEMATOGRAPHY & EDITING</span>
+          </div>
+          <div class="meta-pair">
+            <span class="meta-label">BASE</span>
+            <span class="meta-val">HYDERABAD, INDIA</span>
+          </div>
+          <div class="meta-pair">
+            <span class="meta-label">DIRECT CONTACT</span>
+            <span class="meta-val">chinthalavk040@gmail.com</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="biography-editorial-stream">
+        <article class="bio-block-entry">
+          <span class="bio-era-code">01 / EARLY INCEPTION</span>
+          <h3 class="bio-headline">Visual Media & Early Foundation</h3>
+          <p class="bio-paragraph">
+            Chinthala Vijay Kumar developed his passion for filmmaking through an early immersion in visual media. Rather than observing motion as passive entertainment, his focus was drawn to composition, light dynamics, and the spatial tension within each individual shot.
+          </p>
+        </article>
+
+        <article class="bio-block-entry">
+          <span class="bio-era-code">02 / FORMAL CRAFT TRAINING</span>
+          <h3 class="bio-headline">Government Film and Television Institute (2016–2019)</h3>
+          <p class="bio-paragraph">
+            From 2016 to 2019, he underwent formal training in Cinematography. Here, the optical mechanics of lenses, lighting ratios, camera movement, and frame composition were cemented as his core instinct.
+          </p>
+        </article>
+
+        <article class="bio-block-entry">
+          <span class="bio-era-code">03 / ACTIVE PRODUCTION DIRECTION</span>
+          <h3 class="bio-headline">Tamada Media (2019–2021)</h3>
+          <p class="bio-paragraph">
+            Stepping directly onto sets as an Assistant and Director of Photography (DOP), he operated on live productions including <em>Warangal Vandhana</em>, <em>Surya Kantham</em>, <em>Mr. Girlfriend</em>, and <em>Sathyabhama</em>, gaining practical field mastery over framing, rhythm, and actor blocking.
+          </p>
+        </article>
+
+        <article class="bio-block-entry">
+          <span class="bio-era-code">04 / THE POST-PRODUCTION SUITE</span>
+          <h3 class="bio-headline">Infinitum Network Solutions (2021–Present)</h3>
+          <p class="bio-paragraph">
+            Transitioning his camera intuition into post-production, he serves as a Video Editor shaping high-engagement digital storytelling for prominent creators, translating raw camera takes into cohesive, emotionally tuned narratives.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 04 — THE CHOREOGRAPHED EVOLUTION: CAMERA TO EDIT
+         ====================================================================== -->
+    <section class="scene-craft-metamorphosis editorial-boundary" aria-label="Discipline Evolution">
+      <div class="evolution-stage-slate">
+        <span class="tech-slate-tag">THE TRANSITION OF DISCIPLINE</span>
+      </div>
+
+      <div class="evolution-filmstrip-gate">
+        <div class="evolution-flow-line">
+          <div class="evolution-node">CAMERA</div>
+          <div class="evolution-node">FRAME</div>
+          <div class="evolution-node">SEQUENCE</div>
+          <div class="evolution-node highlight-cut">CUT</div>
+          <div class="evolution-node">EDIT</div>
+        </div>
+
+        <p class="evolution-explanation-text">
+          A cinematographer thinks about what exists inside the boundaries of the frame. An editor thinks about what transpires in the dark space between two cuts. Vijay’s background bridges both realms—ensuring edits are driven not just by sequence timing, but by photographic purpose.
+        </p>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 05 — CHRONOLOGICAL SCRUB TRACK (TIMELINE)
+         ====================================================================== -->
+    <section class="scene-career-scrub-track editorial-boundary" aria-label="Chronological Scrub Track">
+      <div class="scrub-track-sprocket">
+        <span>ARCHIVAL FILMSTRIP · CHRONOLOGY</span>
+        <span>2010 — PRESENT</span>
+      </div>
+
+      <div class="scrub-track-container">
+        <!-- 2010 -->
+        <article class="scrub-milestone-frame">
+          <div class="milestone-year-marker">2010</div>
+          <div class="milestone-content-surface">
+            <div class="milestone-take-tag">TAKE 01 · ACADEMIC ROOT</div>
+            <div class="milestone-organization">APTWR SCHOOL, JINNARAM</div>
+            <span class="milestone-role">Secondary School Certificate (SSC)</span>
+            <p class="milestone-body">The initial academic milestone prior to formal technical immersion in visual media and cinematography.</p>
+          </div>
+        </article>
+
+        <!-- 2016-2019 -->
+        <article class="scrub-milestone-frame">
+          <div class="milestone-year-marker">2016—19</div>
+          <div class="milestone-content-surface">
+            <div class="milestone-take-tag">TAKE 02 · CRAFT FOUNDATION</div>
+            <div class="milestone-organization">GOVERNMENT FILM AND TELEVISION INSTITUTE</div>
+            <span class="milestone-role">Diploma / Cinematography Specialization</span>
+            <p class="milestone-body">Three years of intensive study in visual storytelling, optics, light sculpting, camera choreography, and narrative framing. The foundational eye was forged here.</p>
+          </div>
+        </article>
+
+        <!-- 2019-2021 -->
+        <article class="scrub-milestone-frame active-era">
+          <div class="milestone-year-marker">2019—21</div>
+          <div class="milestone-content-surface">
+            <div class="milestone-take-tag">TAKE 03 · ON-SET CINEMATOGRAPHY</div>
+            <div class="milestone-organization">TAMADA MEDIA</div>
+            <span class="milestone-role">Assistant & Director of Photography (DOP)</span>
+            <p class="milestone-body">Physical camera and lighting direction across active digital narrative productions, establishing real-time production rhythm and visual grammar.</p>
+
+            <div class="tamada-credits-strip">
+              <span class="credits-caption">VERIFIED PRODUCTION CREDITS:</span>
+              <div class="tamada-credits-grid">
+                <div class="film-credit-entry" data-reticle="PROJECT">WARANGAL VANDHANA <span>DOP / ASST</span></div>
+                <div class="film-credit-entry" data-reticle="PROJECT">SURYA KANTHAM <span>DOP / ASST</span></div>
+                <div class="film-credit-entry" data-reticle="PROJECT">MR. GIRLFRIEND <span>DOP / ASST</span></div>
+                <div class="film-credit-entry" data-reticle="PROJECT">SATHYABHAMA <span>DOP / ASST</span></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2021 - PRESENT -->
+        <article class="scrub-milestone-frame active-era">
+          <div class="milestone-year-marker">2021—NOW</div>
+          <div class="milestone-content-surface">
+            <div class="milestone-take-tag">TAKE 04 · EDITORIAL DIRECTION</div>
+            <div class="milestone-organization">INFINITUM NETWORK SOLUTIONS</div>
+            <span class="milestone-role">Lead Video Editor</span>
+            <p class="milestone-body">Transforming multi-cam raw footage into visually compelling stories while preserving genuine emotional nuance, comedic timing, rhythm, and creator personality.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 06 — INFINITUM & THE REVEAL OF CREATORS
+         ====================================================================== -->
+    <section class="scene-infinitum-creators editorial-boundary" aria-label="Collaborative Creator Roster">
+      <span class="tech-slate-tag">COLLABORATIVE ARCHIVE · CREATOR ROSTER</span>
+      <h2 style="font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3.2rem); color: var(--text-emulsion); text-transform: uppercase;">
+        SHAPING NARRATIVES FOR CREATORS
+      </h2>
+
+      <div class="creators-roster-grid">
+        <div class="creator-slate-card" data-reticle="VIEW">
+          <span class="creator-sequence-index">CREATOR_01</span>
+          <div class="creator-name">SHEETAL GAUTHAM</div>
+          <span class="creator-discipline">DIGITAL SERIES & NARRATIVE</span>
+        </div>
+
+        <div class="creator-slate-card" data-reticle="VIEW">
+          <span class="creator-sequence-index">CREATOR_02</span>
+          <div class="creator-name">SUSHMA GOPAL</div>
+          <span class="creator-discipline">CHARACTER VLOGS & CONVERSATIONS</span>
+        </div>
+
+        <div class="creator-slate-card" data-reticle="VIEW">
+          <span class="creator-sequence-index">CREATOR_03</span>
+          <div class="creator-name">CHANDOO GADU</div>
+          <span class="creator-discipline">SITUATIONAL COMEDY & REELS</span>
+        </div>
+
+        <div class="creator-slate-card" data-reticle="VIEW">
+          <span class="creator-sequence-index">CREATOR_04</span>
+          <div class="creator-name">DON PRUTHVI</div>
+          <span class="creator-discipline">HIGH-TEMPO SHORTS & ENTERTAINMENT</span>
+        </div>
+
+        <div class="creator-slate-card" data-reticle="VIEW">
+          <span class="creator-sequence-index">CREATOR_05</span>
+          <div class="creator-name">VARSHA D'SOUZA</div>
+          <span class="creator-discipline">DRAMA & EPISODIC REELS</span>
+        </div>
+
+        <div class="creator-slate-card" data-reticle="VIEW">
+          <span class="creator-sequence-index">CREATOR_06</span>
+          <div class="creator-name">KIRAK PILLA</div>
+          <span class="creator-discipline">WEB SERIES & EXTENDED FICTION</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 07 — "THE WAY I SEE" (KINETIC RHYTHM WORDS)
+         ====================================================================== -->
+    <section class="scene-the-way-i-see editorial-boundary" aria-label="Editorial Cadence">
+      <span class="tech-slate-tag">THE CUTTING MENTALITY · CORE TENETS</span>
+      <h2 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--text-emulsion); text-transform: uppercase;">
+        THE WAY I SEE
+      </h2>
+
+      <div class="kinetic-words-cascade">
+        <div class="kinetic-rhythm-line" data-reticle="RHYTHM">
+          <span class="kinetic-word-anchor">RHYTHM</span>
+          <span class="kinetic-subtext-label">THE TEMPO OF THE CUT</span>
+        </div>
+        <div class="kinetic-rhythm-line" data-reticle="TIMING">
+          <span class="kinetic-word-anchor">TIMING</span>
+          <span class="kinetic-subtext-label">THE SILENCE BEFORE THE BEAT</span>
+        </div>
+        <div class="kinetic-rhythm-line" data-reticle="EMOTION">
+          <span class="kinetic-word-anchor">EMOTION</span>
+          <span class="kinetic-subtext-label">THE REACTION OVER THE ACTION</span>
+        </div>
+        <div class="kinetic-rhythm-line" data-reticle="PERSPECTIVE">
+          <span class="kinetic-word-anchor">PERSPECTIVE</span>
+          <span class="kinetic-subtext-label">THE POINT OF EMPATHY</span>
+        </div>
+        <div class="kinetic-rhythm-line" data-reticle="COMPOSITION">
+          <span class="kinetic-word-anchor">COMPOSITION</span>
+          <span class="kinetic-subtext-label">WHERE THE GAZE TRAVELS</span>
+        </div>
+        <div class="kinetic-rhythm-line" data-reticle="STORY">
+          <span class="kinetic-word-anchor">STORY</span>
+          <span class="kinetic-subtext-label">WHY THE FOOTAGE MATTERS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCENE 08 — THE PORTRAIT HOLD & CLOSING NARRATIVE
+         ====================================================================== -->
+    <section class="scene-portrait-hold-closing editorial-boundary" aria-label="Closing Frame">
+      <div class="closing-frame-monolith">
+        <span class="closing-frame-line">THE FRAME CHANGES.</span>
+        <span class="closing-frame-line secondary">THE STORY REMAINS.</span>
+      </div>
+
+      <div class="chapter-exit-director-dock">
+        <div class="exit-meta-slate">
+          <span>NEXT SEQUENCE: CH_03 / THE WORK & THE ARCHIVE</span>
+        </div>
+        <div class="exit-actions-group">
+          <a href="#work" class="btn-action-primary" data-reticle="CUT">
+            VIEW THE WORK →
+          </a>
+          <a href="index.html" class="btn-action-ghost" data-reticle="RETURN">
+            RETURN TO HOME
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STUDIO HUD: BOTTOM SCRUB TRACK -->
+  <footer class="studio-hud-bottom" role="contentinfo">
+    <div class="hud-scrub-bar" id="scrubBar"></div>
+    <div>CH_02 / THE PERSON BEHIND THE FRAME</div>
+    <div>CINEMATOGRAPHY · EDITING</div>
+    <div id="sceneTakeTracker">SCENE 02 / TAKE 01</div>
+  </footer>
+
+  <!-- SCRIPT ENGINE: PARALLAX, VIEWPORT RETICLE & TIMECODE CHOREOGRAPHY -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Shutter Entrance
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const shutter = document.getElementById('shutterGate');
+          if (shutter) shutter.classList.add('open');
+          document.querySelectorAll('.scene-intro-composition').forEach(el => el.classList.add('revealed'));
+        }, 150);
+      });
+
+      // 2. Custom Viewfinder Reticle Cursor (Desktop)
+      const reticle = document.getElementById('customReticle');
+      const reticleLabel = document.getElementById('reticleLabel');
+
+      if (window.matchMedia('(pointer: fine)').matches && reticle) {
+        window.addEventListener('mousemove', (e) => {
+          reticle.style.left = e.clientX + 'px';
+          reticle.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('[data-reticle]').forEach((interactive) => {
+          interactive.addEventListener('mouseenter', () => {
+            const label = interactive.getAttribute('data-reticle') || 'VIEW';
+            reticle.classList.add('active');
+            reticleLabel.textContent = label;
+          });
+          interactive.addEventListener('mouseleave', () => {
+            reticle.classList.remove('active');
+            reticleLabel.textContent = 'FOCUS';
+          });
+        });
+      }
+
+      // 3. Scroll Dynamics: Deterministic Timecode & Bottom HUD Tracker
+      const hudTimecode = document.getElementById('hudTimecode');
+      const scrubBar = document.getElementById('scrubBar');
+      const sceneTakeTracker = document.getElementById('sceneTakeTracker');
+
+      const sceneTakes = [
+        { progress: 0.15, label: 'SCENE 02 / TAKE 01 · DOSSIER' },
+        { progress: 0.35, label: 'SCENE 02 / TAKE 02 · PHILOSOPHY' },
+        { progress: 0.55, label: 'SCENE 02 / TAKE 03 · METAMORPHOSIS' },
+        { progress: 0.75, label: 'SCENE 02 / TAKE 04 · FILMSTRIP' },
+        { progress: 0.90, label: 'SCENE 02 / TAKE 05 · RHYTHM' },
+        { progress: 1.00, label: 'SCENE 02 / TAKE 06 · END FRAME' }
+      ];
+
+      function onScroll() {
+        const scrollY = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = Math.min(Math.max(scrollY / (maxScroll || 1), 0), 1);
+
+        // Update timeline scrub indicator
+        if (scrubBar) scrubBar.style.width = (progress * 100) + '%';
+
+        // Deterministic Timecode calculation (00:00:12:00 to 00:00:36:23)
+        const totalFrames = Math.floor(progress * 576);
+        const seconds = Math.floor(totalFrames / 24) + 12;
+        const frames = totalFrames % 24;
+        const secStr = seconds < 10 ? '0' + seconds : seconds;
+        const frmStr = frames < 10 ? '0' + frames : frames;
+        if (hudTimecode) hudTimecode.textContent = `00:00:${secStr}:${frmStr}`;
+
+        // Take updates
+        if (sceneTakeTracker) {
+          const match = sceneTakes.find(st => progress <= st.progress) || sceneTakes[sceneTakes.length - 1];
+          sceneTakeTracker.textContent = match.label;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // 4. Reveal Observer for Mask Gates
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.mask-gate, .scene-philosophy-statement').forEach((el) => observer.observe(el));
+    })();
+  </script>
+</body>
+</html>
