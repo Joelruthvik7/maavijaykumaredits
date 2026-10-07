@@ -50,20 +50,103 @@
       color: #070708;
     }
 
-    /* Subtle 35mm Emulsion Grain Overlay */
+    /* 35mm Celluloid Grain Overlay with Organic Gate Flutter */
     .film-grain {
       position: fixed;
-      top: -50%;
-      left: -50%;
-      right: -50%;
-      bottom: -50%;
-      width: 200%;
-      height: 200vh;
-      background: transparent url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.045"/></svg>') repeat;
+      top: -100px;
+      left: -100px;
+      width: calc(100vw + 200px);
+      height: calc(100vh + 200px);
+      background: transparent url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.06"/></svg>') repeat;
       pointer-events: none;
       z-index: 9990;
       opacity: 0.65;
+      animation: grainFlicker 0.18s steps(2) infinite;
+      will-change: transform;
     }
+
+    @keyframes grainFlicker {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-3px, 2px); }
+      50% { transform: translate(3px, -2px); }
+      75% { transform: translate(-2px, -3px); }
+      100% { transform: translate(1px, 2px); }
+    }
+
+    /* Cinematic Shutter Scanline / CRT Raster */
+    .film-raster {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.015), rgba(0, 255, 0, 0.005), rgba(0, 0, 255, 0.015));
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+      z-index: 9988;
+      opacity: 0.45;
+    }
+
+    /* Vignette Edge Shading */
+    .film-vignette {
+      position: fixed;
+      inset: 0;
+      box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.88);
+      pointer-events: none;
+      z-index: 9989;
+    }
+
+    /* Master Timeline Playhead Laser Indicator */
+    #timeline-laser {
+      position: fixed;
+      top: 48px;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #E54833, #FF8473, #E54833);
+      box-shadow: 0 0 10px rgba(229, 72, 51, 0.8), 0 0 20px rgba(229, 72, 51, 0.4);
+      z-index: 60;
+      pointer-events: none;
+      transition: width 0.08s linear;
+    }
+
+    /* Master Timeline Scrim / Gate Flash */
+    #gate-flash {
+      position: fixed;
+      inset: 0;
+      background-color: #070708;
+      z-index: 99998;
+      pointer-events: none;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Viewfinder Custom Reticle System */
+    #cursor-reticle {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform: translate3d(-50%, -50%, 0);
+      z-index: 99999;
+      will-change: transform, width, height;
+      transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+                  height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color 0.25s ease,
+                  background-color 0.25s ease;
+    }
+
+    /* Framing Corner Crosshairs on Cursor Reticle */
+    .reticle-corner {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-color: rgba(229, 72, 51, 0.8);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .reticle-active .reticle-corner { opacity: 1; }
+    .reticle-tl { top: -2px; left: -2px; border-top: 1.5px solid; border-left: 1.5px solid; }
+    .reticle-tr { top: -2px; right: -2px; border-top: 1.5px solid; border-right: 1.5px solid; }
+    .reticle-bl { bottom: -2px; left: -2px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
+    .reticle-br { bottom: -2px; right: -2px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
 
     /* Cinematic Cut-Mask Text Utility */
     .mask-reveal {
@@ -73,32 +156,66 @@
     }
     
     .mask-reveal-inner {
-      transform: translateY(115%);
-      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform;
+      display: inline-block;
+      transform: translateY(115%) skewY(3deg);
+      filter: blur(8px);
+      opacity: 0;
+      transition: transform 1.3s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 1s ease;
+      will-change: transform, filter, opacity;
     }
 
     .revealed .mask-reveal-inner {
-      transform: translateY(0%);
+      transform: translateY(0%) skewY(0deg);
+      filter: blur(0px);
+      opacity: 1;
     }
 
-    /* Viewfinder Custom Reticle */
-    #cursor-reticle {
-      pointer-events: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      transition: width 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
-                  height 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-                  background-color 0.2s ease,
-                  border-color 0.2s ease;
+    /* Editorial Scroll Reveal Classes */
+    .cinematic-reveal {
+      opacity: 0;
+      transform: translateY(38px);
+      filter: blur(6px);
+      transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity, filter;
     }
+
+    .cinematic-reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0px);
+    }
+
+    /* Staggered Delay Utilities */
+    .reveal-delay-1 { transition-delay: 0.12s; }
+    .reveal-delay-2 { transition-delay: 0.24s; }
+    .reveal-delay-3 { transition-delay: 0.36s; }
 
     /* Anamorphic aspect ratio lock */
     .aspect-anamorphic {
       aspect-ratio: 2.39 / 1;
+    }
+
+    /* Film Gate Light Leak Pulse */
+    .light-leak {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(229, 72, 51, 0.18) 0%, rgba(255, 132, 115, 0.05) 40%, transparent 75%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .group:hover .light-leak {
+      opacity: 1;
+    }
+
+    /* Kinetic Film Track Lines on Hover */
+    .film-perforation {
+      background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, rgba(255,255,255,0.06) 10px, rgba(255,255,255,0.06) 16px);
     }
 
     /* Chapter Navigation Link Styles & Active State Indicator */
@@ -136,26 +253,43 @@
 
     /* Respect Reduced Motion */
     @media (prefers-reduced-motion: reduce) {
-      .mask-reveal-inner {
-        transform: translateY(0%) !important;
+      .mask-reveal-inner,
+      .cinematic-reveal {
+        transform: none !important;
+        filter: none !important;
+        opacity: 1 !important;
         transition: none !important;
+      }
+      .film-grain,
+      .film-raster {
+        display: none !important;
       }
       * {
         animation-duration: 0.001s !important;
         transition-duration: 0.001s !important;
-      }
-      .film-grain {
-        display: none;
       }
     }
   </style>
 </head>
 <body class="bg-void text-coldprint font-sans selection:bg-rec selection:text-void overflow-x-hidden relative">
 
+  <!-- Cinematic Optical Layers -->
   <div class="film-grain" aria-hidden="true"></div>
+  <div class="film-raster" aria-hidden="true"></div>
+  <div class="film-vignette" aria-hidden="true"></div>
+
+  <!-- Opening Gate Shutter -->
+  <div id="gate-flash" aria-hidden="true"></div>
+
+  <!-- Realtime Master Timeline Laser Playhead -->
+  <div id="timeline-laser" aria-hidden="true"></div>
 
   <!-- Viewfinder Reticle (Desktop) -->
   <div id="cursor-reticle" class="hidden md:flex items-center justify-center rounded-none w-5 h-5 border border-white/40 pointer-events-none transition-all duration-150">
+    <div class="reticle-corner reticle-tl"></div>
+    <div class="reticle-corner reticle-tr"></div>
+    <div class="reticle-corner reticle-bl"></div>
+    <div class="reticle-corner reticle-br"></div>
     <div id="reticle-dot" class="w-1 h-1 bg-emulsion transition-transform duration-150"></div>
     <span id="reticle-label" class="opacity-0 font-mono text-[9px] tracking-widest text-void font-bold uppercase transition-opacity duration-150 whitespace-nowrap"></span>
   </div>
@@ -319,7 +453,7 @@
     <!-- SCENE 00 - 04: THE OPENING FRAME & TITLE REVEAL -->
     <section id="hero-sequence" class="relative min-h-screen w-full flex flex-col justify-between px-4 sm:px-8 md:px-16 pt-24 pb-16 overflow-hidden">
       <!-- Technical Metatags -->
-      <div class="w-full flex items-center justify-between border-b border-white/[0.08] pb-4 font-mono text-[11px] text-timecode">
+      <div class="w-full flex items-center justify-between border-b border-white/[0.08] pb-4 font-mono text-[11px] text-timecode cinematic-reveal">
         <div class="flex items-center gap-4">
           <span class="text-rec font-bold">SEQ_01</span>
           <span>SCENE 01 / TAKE 01</span>
@@ -336,7 +470,7 @@
       <div id="hero-title-container" class="my-auto py-12 md:py-20 flex flex-col">
         <!-- Mask 2: VIJAY KUMAR -->
         <div class="mask-reveal">
-<h1 class="mask-reveal-inner font-title text-[10vw] sm:text-[9vw] lg:text-[8vw] leading-[0.88] uppercase text-coldprint tracking-[-0.03em] font-black select-none whitespace-nowrap">
+<h1 class="mask-reveal-inner font-title text-[10vw] sm:text-[9vw] lg:text-[8vw] leading-[0.88] uppercase text-coldprint tracking-[-0.03em] font-black select-none whitespace-nowrap" data-speed="0.12">
   MA VIJAYKUMAR
 </h1>
         </div>
@@ -345,7 +479,7 @@
         <div id="hero-baseline" class="w-0 h-[1px] bg-white/30 my-6 md:my-8 transition-all duration-1000 ease-expo-out"></div>
 
         <!-- Technical Metadata Attachment (Scene 04) -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs md:text-sm text-coldprint tracking-wider">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs md:text-sm text-coldprint tracking-wider cinematic-reveal reveal-delay-2">
           <div class="flex flex-wrap items-center gap-3 md:gap-6">
             <span class="text-emulsion font-bold bg-white/10 px-2 py-0.5 rounded-none text-xs">VIDEO EDITOR</span>
             <span class="text-white/40">/</span>
@@ -360,12 +494,12 @@
       </div>
 
       <!-- Scroll Invitation Indicator -->
-      <div class="w-full flex items-center justify-between border-t border-white/[0.08] pt-4 font-mono text-xs text-timecode">
+      <div class="w-full flex items-center justify-between border-t border-white/[0.08] pt-4 font-mono text-xs text-timecode cinematic-reveal reveal-delay-3">
         <div class="flex items-center gap-2">
           <span class="animate-pulse text-rec">▼</span>
           <span class="tracking-widest uppercase text-[11px]">SCROLL TO ADVANCE TIMELINE</span>
         </div>
-        <div class="font-mono text-[11px] text-white/40">
+        <div id="hero-frame-counter" class="font-mono text-[11px] text-white/40">
           FRAME: [0001 / 8640]
         </div>
       </div>
@@ -375,7 +509,7 @@
     <section id="first-frame-scene" class="relative w-full py-20 px-4 sm:px-8 md:px-16 border-t border-white/[0.08] bg-suite">
       <div class="max-w-7xl mx-auto">
         <!-- Frame Metadata Header -->
-        <div class="flex items-center justify-between mb-4 font-mono text-[11px] text-timecode">
+        <div class="flex items-center justify-between mb-4 font-mono text-[11px] text-timecode cinematic-reveal">
           <div class="flex items-center gap-3">
             <span class="text-white/80 font-bold">[FRAME 01]</span>
             <span>RATIO: 2.39:1 CINEMASCOPE</span>
@@ -387,7 +521,10 @@
         </div>
 
         <!-- 2.39:1 Anamorphic Frame Container with Optical Push -->
-        <div class="relative w-full aspect-anamorphic bg-black overflow-hidden border border-white/10 group cursor-pointer" data-cursor="VIEW FRAME">
+        <div class="relative w-full aspect-anamorphic bg-black overflow-hidden border border-white/10 group cursor-pointer cinematic-reveal reveal-delay-1 film-perforation" data-cursor="VIEW FRAME">
+          <!-- Light Leak Layer -->
+          <div class="light-leak"></div>
+
           <!-- Vignette & Lens Distortion Simulation -->
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 z-10 pointer-events-none"></div>
           
@@ -395,7 +532,7 @@
           <img 
             src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=2000&q=85" 
             alt="Cinematic frame capture in editing room" 
-            class="w-full h-full object-cover object-center filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-1000 ease-expo-out"
+            class="w-full h-full object-cover object-center filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-1000 ease-expo-out parallax-img"
             loading="lazy"
             onerror="this.src='https://placehold.co/1920x800/0E0F12/D4D5DC?text=CINEMATIC+FRAME+STILL'"
           />
@@ -409,14 +546,14 @@
           </div>
 
           <!-- Crosshairs -->
-          <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-30">
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-30 group-hover:opacity-75 transition-opacity duration-300">
             <div class="w-8 h-[1px] bg-white"></div>
             <div class="h-8 w-[1px] bg-white absolute"></div>
           </div>
         </div>
 
         <!-- Editorial Positioning Statement (Scene 07) -->
-        <div class="mt-16 md:mt-24 max-w-4xl">
+        <div class="mt-16 md:mt-24 max-w-4xl cinematic-reveal reveal-delay-2">
           <span class="font-mono text-xs text-rec uppercase tracking-widest mb-3 block">// STATEMENT 01</span>
           <p class="font-title text-2xl sm:text-4xl md:text-5xl leading-tight text-emulsion tracking-tight font-medium">
             "Transforming raw footage into compelling visual stories."
@@ -437,17 +574,17 @@
     <!-- SCENE 08: THE CRAFT (MONUMENTAL TYPOGRAPHIC SEQUENCE) -->
     <section id="craft-sequence" class="relative w-full py-28 md:py-40 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08] overflow-hidden">
       <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-16 font-mono text-xs text-timecode">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-16 font-mono text-xs text-timecode cinematic-reveal">
           <span>// DISCIPLINE MATRIX</span>
           <span>POST-PRODUCTION / DIRECTION OF PHOTOGRAPHY</span>
         </div>
 
         <!-- Asymmetric Staggered Typographic Grid -->
         <div class="space-y-4 md:space-y-2">
-          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors">
+          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors cinematic-reveal reveal-delay-1 group">
   
   <h2 
-    class="font-title text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-emulsion tracking-tighter uppercase"
+    class="font-title text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-emulsion tracking-tighter uppercase transition-transform duration-700 ease-expo-out group-hover:translate-x-3 cursor-default"
     data-cursor="DISCIPLINE">
     VIDEO EDITING
   </h2>
@@ -458,8 +595,8 @@
   </span>
 
 </div>
-          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors">
-            <h2 class="font-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-emulsion tracking-tighter uppercase" data-cursor="DISCIPLINE">
+          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors cinematic-reveal reveal-delay-2 group">
+            <h2 class="font-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-emulsion tracking-tighter uppercase transition-transform duration-700 ease-expo-out group-hover:translate-x-3 cursor-default" data-cursor="DISCIPLINE">
               CINEMATOGRAPHY
             </h2>
             <span class="font-mono text-xs sm:text-sm text-timecode tracking-widest md:text-right mt-2 md:mt-0">
@@ -467,8 +604,8 @@
             </span>
           </div>
 
-          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors">
-            <h2 class="font-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-coldprint tracking-tighter uppercase ml-0 md:ml-20" data-cursor="DISCIPLINE">
+          <div class="flex flex-col md:flex-row md:items-baseline justify-between border-b border-white/[0.05] pb-6 hover:border-white/30 transition-colors cinematic-reveal reveal-delay-3 group">
+            <h2 class="font-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-coldprint tracking-tighter uppercase ml-0 md:ml-20 transition-transform duration-700 ease-expo-out group-hover:translate-x-3 cursor-default" data-cursor="DISCIPLINE">
               STORYTELLING
             </h2>
             <span class="font-mono text-xs sm:text-sm text-timecode tracking-widest md:text-right mt-2 md:mt-0">
@@ -478,7 +615,7 @@
         </div>
 
         <!-- Editorial Statement (Scene 13) -->
-        <div class="mt-20 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        <div class="mt-20 grid grid-cols-1 md:grid-cols-12 gap-8 items-start cinematic-reveal reveal-delay-2">
           <div class="md:col-span-4 font-mono text-xs text-rec uppercase tracking-widest">
             // EDITORIAL INTEGRITY
           </div>
@@ -505,7 +642,7 @@
       <div class="max-w-7xl mx-auto">
         
         <!-- Section Header Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-16 gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-16 gap-4 cinematic-reveal">
           <div>
             <span class="font-mono text-xs text-rec uppercase tracking-widest block mb-1">// REEL ARCHIVE</span>
             <h3 class="font-title text-3xl sm:text-5xl font-black text-emulsion uppercase tracking-tight">SELECTED WORK</h3>
@@ -518,14 +655,14 @@
         </div>
 
         <!-- PRIMARY FEATURED PROJECT -->
-        <div class="mb-20">
+        <div class="mb-20 cinematic-reveal reveal-delay-1">
           <div class="flex items-center justify-between mb-3 font-mono text-xs text-timecode">
             <span class="text-emulsion font-bold">[PRIMARY FEATURE 01]</span>
             <span>ORIGINAL BROADCAST / 4K</span>
           </div>
 
           <article 
-            class="relative w-full bg-void border border-white/10 overflow-hidden group cursor-pointer transition-all duration-300 hover:border-white/40"
+            class="relative w-full bg-void border border-white/10 overflow-hidden group cursor-pointer transition-all duration-500 hover:border-white/40 hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
             data-video-id="dQw4w9WgXcQ"
             data-video-title="KIRAK PILLA — EPISODIC WEB DRAMA"
             data-video-creator="Kirak Pilla / Infinitum"
@@ -533,11 +670,12 @@
             data-cursor="PLAY REEL"
             onclick="openVideoModal(this)"
           >
-            <div class="relative w-full aspect-video md:aspect-anamorphic overflow-hidden bg-black">
+            <div class="relative w-full aspect-video md:aspect-anamorphic overflow-hidden bg-black film-perforation">
+              <div class="light-leak"></div>
               <img 
                 src="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1800&q=85" 
                 alt="Kirak Pilla Episodic Series Cover" 
-                class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition-transform duration-700 ease-expo-out"
+                class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 group-hover:contrast-125 transition-transform duration-700 ease-expo-out parallax-img"
                 loading="lazy"
                 onerror="this.src='https://placehold.co/1920x1080/18191E/D4D5DC?text=FEATURED+PRODUCTION+STILL'"
               />
@@ -572,7 +710,7 @@
               </div>
 
               <div class="flex items-center gap-4">
-                <span class="font-mono text-xs text-coldprint tracking-widest border border-white/20 px-3 py-1.5 uppercase group-hover:border-white/80 transition">
+                <span class="font-mono text-xs text-coldprint tracking-widest border border-white/20 px-3 py-1.5 uppercase group-hover:border-white/80 group-hover:text-emulsion transition">
                   EXPAND CUT →
                 </span>
               </div>
@@ -584,7 +722,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           <!-- Secondary Project 01 -->
           <article 
-            class="bg-void border border-white/10 overflow-hidden group cursor-pointer hover:border-white/40 transition-all"
+            class="bg-void border border-white/10 overflow-hidden group cursor-pointer hover:border-white/40 transition-all duration-500 cinematic-reveal reveal-delay-2"
             data-video-id="L_LUpnjgPso"
             data-video-title="VARSHA D'SOUZA — CINEMATIC VLOGS & STORIES"
             data-video-creator="Varsha D'Souza / Infinitum"
@@ -592,11 +730,12 @@
             data-cursor="PLAY"
             onclick="openVideoModal(this)"
           >
-            <div class="relative w-full aspect-video overflow-hidden bg-black">
+            <div class="relative w-full aspect-video overflow-hidden bg-black film-perforation">
+              <div class="light-leak"></div>
               <img 
                 src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1000&q=80" 
                 alt="Varsha D'Souza Project Still" 
-                class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700 ease-expo-out"
+                class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700 ease-expo-out parallax-img"
                 loading="lazy"
                 onerror="this.src='https://placehold.co/1280x720/18191E/D4D5DC?text=VARSHA+DSOUZA+SERIES'"
               />
@@ -626,7 +765,7 @@
 
           <!-- Secondary Project 02 -->
           <article 
-            class="bg-void border border-white/10 overflow-hidden group cursor-pointer hover:border-white/40 transition-all"
+            class="bg-void border border-white/10 overflow-hidden group cursor-pointer hover:border-white/40 transition-all duration-500 cinematic-reveal reveal-delay-3"
             data-video-id="e-ORhEE9VVg"
             data-video-title="SHEETAL GAUTHAM & SUSHMA GOPAL — BRAND STORIES"
             data-video-creator="Sheetal Gautham & Sushma Gopal"
@@ -634,11 +773,12 @@
             data-cursor="PLAY"
             onclick="openVideoModal(this)"
           >
-            <div class="relative w-full aspect-video overflow-hidden bg-black">
+            <div class="relative w-full aspect-video overflow-hidden bg-black film-perforation">
+              <div class="light-leak"></div>
               <img 
                 src="https://images.unsplash.com/photo-1518173946687-a4c8a383392e?auto=format&fit=crop&w=1000&q=80" 
                 alt="Sheetal Gautham production still" 
-                class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700 ease-expo-out"
+                class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-700 ease-expo-out parallax-img"
                 loading="lazy"
                 onerror="this.src='https://placehold.co/1280x720/18191E/D4D5DC?text=SHEETAL+GAUTHAM+STILL'"
               />
@@ -668,14 +808,14 @@
         </div>
 
         <!-- Creator Collaboration Mention Bar -->
-        <div class="mt-14 border border-white/[0.08] p-6 bg-void/50 flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs">
+        <div class="mt-14 border border-white/[0.08] p-6 bg-void/50 flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs cinematic-reveal">
           <div class="text-timecode">
             <span class="text-rec font-semibold">// CREDITED CHANNELS & TALENT:</span>
             <span class="text-coldprint ml-2">Sheetal Gautham · Sushma Gopal · Chandoo Gadu · Don Pruthvi · Varsha D'Souza · Kirak Pilla</span>
           </div>
-          <a href="#selected-work" class="inline-flex items-center gap-2 text-emulsion hover:text-rec uppercase tracking-wider font-semibold" data-cursor="VIEW ALL">
+          <a href="#selected-work" class="inline-flex items-center gap-2 text-emulsion hover:text-rec uppercase tracking-wider font-semibold group" data-cursor="VIEW ALL">
             <span>VIEW COMPLETE WORK ARCHIVE</span>
-            <span>→</span>
+            <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
           </a>
         </div>
       </div>
@@ -683,7 +823,7 @@
 
     <!-- SCENE 12: CINEMATIC PAUSE -->
     <section class="relative w-full py-36 md:py-48 px-4 sm:px-8 md:px-16 bg-void flex items-center justify-center text-center overflow-hidden border-t border-white/[0.08]">
-      <div class="max-w-4xl mx-auto space-y-6">
+      <div class="max-w-4xl mx-auto space-y-6 cinematic-reveal">
         <span class="font-mono text-xs text-white/30 uppercase tracking-[0.3em] block">[INTERMISSION — ZERO FRAME]</span>
         <h3 class="font-title text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-emulsion uppercase leading-none select-none">
           EVERY FRAME<br>HAS A PURPOSE.
@@ -697,13 +837,13 @@
     <!-- SCENE 13: EXPERIENCE TEASER -->
     <section id="career-teaser" class="relative w-full py-24 px-4 sm:px-8 md:px-16 bg-suite border-t border-white/[0.08]">
       <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-16 font-mono text-xs text-timecode">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-16 font-mono text-xs text-timecode cinematic-reveal">
           <span>// PRODUCTION LINEAGE</span>
           <span>CAREER TRACK RECORD</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-          <div>
+          <div class="cinematic-reveal">
             <span class="font-mono text-xs text-rec uppercase tracking-widest block mb-2">// THE MILESTONES</span>
             <h4 class="font-title text-3xl sm:text-4xl font-bold text-emulsion uppercase tracking-tight mb-6">
               GROUNDED IN CELLULOID, BUILT FOR DIGITAL.
@@ -715,22 +855,22 @@
 
           <!-- Milestones Visual Track -->
           <div class="space-y-8 font-mono text-xs border-l border-white/15 pl-6 md:pl-8">
-            <div class="relative group">
-              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-rec rounded-none"></div>
+            <div class="relative group cinematic-reveal reveal-delay-1">
+              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-rec rounded-none transition-transform duration-300 group-hover:scale-125"></div>
               <span class="text-rec font-bold">2021 — PRESENT</span>
               <h5 class="font-sans text-lg font-bold text-emulsion uppercase tracking-wide mt-1">INFINITUM NETWORK SOLUTIONS</h5>
               <p class="text-coldprint mt-1">Lead Video Editor — Digital Series, Branded Content, High-Retention Narrative Edits.</p>
             </div>
 
-            <div class="relative group">
-              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/40 rounded-none"></div>
+            <div class="relative group cinematic-reveal reveal-delay-2">
+              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/40 rounded-none transition-transform duration-300 group-hover:scale-125"></div>
               <span class="text-timecode font-bold">2019 — 2021</span>
               <h5 class="font-sans text-lg font-bold text-emulsion uppercase tracking-wide mt-1">TAMADA MEDIA</h5>
               <p class="text-coldprint mt-1">Assistant & Director of Photography (DOP) — Sets, Lighting Rigs, Camera Operation & Assembly Edits.</p>
             </div>
 
-            <div class="relative group">
-              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/20 rounded-none"></div>
+            <div class="relative group cinematic-reveal reveal-delay-3">
+              <div class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 bg-white/20 rounded-none transition-transform duration-300 group-hover:scale-125"></div>
               <span class="text-timecode font-bold">2016 — 2019</span>
               <h5 class="font-sans text-lg font-bold text-emulsion uppercase tracking-wide mt-1">GOVERNMENT FILM AND TELEVISION INSTITUTE</h5>
               <p class="text-coldprint mt-1">Specialization: Cinematography & Visual Composition.</p>
@@ -743,11 +883,12 @@
     <!-- SCENE 14 - 15: SECOND CINEMATIC FRAME -->
     <section class="relative w-full py-24 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08]">
       <div class="max-w-7xl mx-auto">
-        <div class="relative w-full aspect-[21/9] bg-black overflow-hidden border border-white/10 group cursor-pointer" data-cursor="OBSERVE">
+        <div class="relative w-full aspect-[21/9] bg-black overflow-hidden border border-white/10 group cursor-pointer cinematic-reveal film-perforation" data-cursor="OBSERVE">
+          <div class="light-leak"></div>
           <img 
             src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&q=85" 
             alt="Film production lighting and cinema rig" 
-            class="w-full h-full object-cover filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-1000 ease-expo-out"
+            class="w-full h-full object-cover filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-1000 ease-expo-out parallax-img"
             loading="lazy"
             onerror="this.src='https://placehold.co/1920x820/070708/D4D5DC?text=CINEMATOGRAPHY+RIG+STILL'"
           />
@@ -759,19 +900,19 @@
         </div>
 
         <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-white/[0.08] pt-12">
-          <div>
+          <div class="cinematic-reveal reveal-delay-1">
             <span class="font-mono text-xs text-rec uppercase tracking-wider block mb-2">01 / RHYTHM & TEMPO</span>
             <p class="font-sans text-xs sm:text-sm text-coldprint leading-relaxed">
               Every cut is timed to subconscious heartbeat rhythms. An editor controls how fast the viewer breathes.
             </p>
           </div>
-          <div>
+          <div class="cinematic-reveal reveal-delay-2">
             <span class="font-mono text-xs text-rec uppercase tracking-wider block mb-2">02 / LIGHT & COMPOSITION</span>
             <p class="font-sans text-xs sm:text-sm text-coldprint leading-relaxed">
               Trained through formal cinematography: framing, focal depth, color science, and dynamic range are treated with surgical intent.
             </p>
           </div>
-          <div>
+          <div class="cinematic-reveal reveal-delay-3">
             <span class="font-mono text-xs text-rec uppercase tracking-wider block mb-2">03 / STORY OVER NOISE</span>
             <p class="font-sans text-xs sm:text-sm text-coldprint leading-relaxed">
               No gratuitous transitions or empty effects. Precision edits that elevate human performance and authentic character arcs.
@@ -784,7 +925,7 @@
     <!-- SCENE 16 - 17: FINAL HOME SEQUENCE & DIRECT CTA -->
     <section id="contact-sequence" class="relative w-full py-32 md:py-44 px-4 sm:px-8 md:px-16 bg-void border-t border-white/[0.08] flex flex-col justify-between">
       <div class="max-w-7xl mx-auto w-full">
-        <div class="font-mono text-xs text-timecode flex items-center justify-between border-b border-white/10 pb-4 mb-16">
+        <div class="font-mono text-xs text-timecode flex items-center justify-between border-b border-white/10 pb-4 mb-16 cinematic-reveal">
           <div class="flex items-center gap-2">
             <span class="text-rec font-bold">SEQ_OUTRO</span>
             <span>·</span>
@@ -794,18 +935,18 @@
         </div>
 
         <div class="max-w-4xl space-y-8">
-          <span class="font-mono text-xs text-rec uppercase tracking-widest block">// NEXT SEQUENCE</span>
-          <h2 class="font-title text-4xl sm:text-6xl md:text-8xl font-black text-emulsion uppercase tracking-tight leading-[0.95]">
+          <span class="font-mono text-xs text-rec uppercase tracking-widest block cinematic-reveal">// NEXT SEQUENCE</span>
+          <h2 class="font-title text-4xl sm:text-6xl md:text-8xl font-black text-emulsion uppercase tracking-tight leading-[0.95] cinematic-reveal reveal-delay-1">
             START THE NEXT PROJECT.
           </h2>
-          <p class="font-sans text-base sm:text-xl text-coldprint max-w-2xl font-light leading-relaxed">
+          <p class="font-sans text-base sm:xl text-coldprint max-w-2xl font-light leading-relaxed cinematic-reveal reveal-delay-2">
             Have a story, episodic series, commercial campaign, channel, film, or visual project in mind? Let's enter the edit.
           </p>
 
-          <div class="pt-6 flex flex-wrap items-center gap-6">
+          <div class="pt-6 flex flex-wrap items-center gap-6 cinematic-reveal reveal-delay-3">
             <a 
               href="mailto:chinthalavk040@gmail.com" 
-              class="bg-emulsion text-void px-8 py-4 font-mono text-xs font-bold tracking-widest uppercase hover:bg-rec hover:text-emulsion transition-colors inline-block"
+              class="bg-emulsion text-void px-8 py-4 font-mono text-xs font-bold tracking-widest uppercase hover:bg-rec hover:text-emulsion transition-colors inline-block relative overflow-hidden group shadow-lg"
               data-cursor="CONTACT"
             >
               START A PROJECT →
@@ -819,7 +960,7 @@
             </a>
           </div>
 
-          <div class="pt-6 font-mono text-xs text-timecode flex items-center gap-3">
+          <div class="pt-6 font-mono text-xs text-timecode flex items-center gap-3 cinematic-reveal">
             <span>OFFICIAL DISPATCH:</span>
             <a href="mailto:chinthalavk040@gmail.com" class="text-emulsion hover:text-rec underline underline-offset-4">
               chinthalavk040@gmail.com
@@ -828,7 +969,7 @@
         </div>
       </div>
 
-      <div class="max-w-7xl mx-auto w-full mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between font-mono text-[11px] text-timecode gap-4">
+      <div class="max-w-7xl mx-auto w-full mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between font-mono text-[11px] text-timecode gap-4 cinematic-reveal">
         <div>
           © MA VIJAY KUMAR. ALL RIGHTS RESERVED.
         </div>
@@ -861,14 +1002,14 @@
   </footer>
 
   <!-- THEATRE MODAL: YOUTUBE PLAYER -->
-  <div id="video-theatre" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4 md:p-12" aria-hidden="true">
-    <div class="relative w-full max-w-5xl bg-suite border border-white/20 flex flex-col overflow-hidden shadow-2xl">
+  <div id="video-theatre" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl opacity-0 pointer-events-none transition-all duration-500 ease-expo-out flex items-center justify-center p-4 md:p-12" aria-hidden="true">
+    <div id="modal-container-card" class="relative w-full max-w-5xl bg-suite border border-white/20 flex flex-col overflow-hidden shadow-2xl scale-95 transition-transform duration-500 ease-expo-out">
       <div class="h-11 bg-void border-b border-white/10 px-4 flex items-center justify-between font-mono text-xs">
         <div class="flex items-center gap-3">
-          <span class="text-rec font-bold">● THEATRE PLAYHEAD</span>
+          <span class="text-rec font-bold animate-pulse">● THEATRE PLAYHEAD</span>
           <span id="modal-video-title" class="text-coldprint truncate max-w-xs md:max-w-md font-semibold"></span>
         </div>
-        <button id="modal-close-btn" class="text-coldprint hover:text-emulsion p-1.5 font-bold uppercase transition" data-cursor="CLOSE">
+        <button id="modal-close-btn" class="text-coldprint hover:text-emulsion p-1.5 font-bold uppercase transition hover:text-rec" data-cursor="CLOSE">
           ✕ CLOSE CUT [ESC]
         </button>
       </div>
@@ -887,37 +1028,64 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 01. Opening Sequence Choreography
-      setTimeout(() => {
-        const heroTitle = document.getElementById('hero-title-container');
-        if (heroTitle) {
-          heroTitle.classList.add('revealed');
-        }
-        
-        const baseline = document.getElementById('hero-baseline');
-        if (baseline) {
-          baseline.style.width = '100%';
-        }
-      }, 350);
+      // 00. Cinematic Camera Calibration & Shutter Opening
+      const gateFlash = document.getElementById('gate-flash');
+      const heroTitle = document.getElementById('hero-title-container');
+      const baseline = document.getElementById('hero-baseline');
 
-      // 02. Reticle Cursor Management (Desktop only)
+      setTimeout(() => {
+        if (gateFlash) gateFlash.style.opacity = '0';
+      }, 100);
+
+      setTimeout(() => {
+        if (heroTitle) heroTitle.classList.add('revealed');
+        if (baseline) baseline.style.width = '100%';
+      }, 420);
+
+      // 01. IntersectionObserver for Cinematic Editorial Reveals
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+      document.querySelectorAll('.cinematic-reveal').forEach(el => revealObserver.observe(el));
+
+      // 02. Smooth Lerp Kinetic Reticle Cursor (Desktop)
       const reticle = document.getElementById('cursor-reticle');
       const reticleDot = document.getElementById('reticle-dot');
       const reticleLabel = document.getElementById('reticle-label');
+      
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let cursorX = mouseX;
+      let cursorY = mouseY;
+      let isFinePointer = window.matchMedia('(pointer: fine)').matches;
 
-      if (window.matchMedia('(pointer: fine)').matches && reticle) {
+      if (isFinePointer && reticle) {
         window.addEventListener('mousemove', (e) => {
-          reticle.style.left = `${e.clientX}px`;
-          reticle.style.top = `${e.clientY}px`;
-        });
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        }, { passive: true });
+
+        const animateCursor = () => {
+          cursorX += (mouseX - cursorX) * 0.22;
+          cursorY += (mouseY - cursorY) * 0.22;
+          reticle.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+          requestAnimationFrame(animateCursor);
+        };
+        requestAnimationFrame(animateCursor);
 
         const interactiveElements = document.querySelectorAll('[data-cursor]');
         interactiveElements.forEach(el => {
           el.addEventListener('mouseenter', () => {
             const label = el.getAttribute('data-cursor') || 'VIEW';
-            reticle.style.width = '74px';
-            reticle.style.height = '28px';
-            reticle.style.backgroundColor = '#F4F4F6';
+            reticle.classList.add('reticle-active');
+            reticle.style.width = '84px';
+            reticle.style.height = '30px';
+            reticle.style.backgroundColor = 'rgba(244, 244, 246, 0.95)';
             reticle.style.borderColor = '#F4F4F6';
             reticleDot.style.display = 'none';
             reticleLabel.textContent = `[${label}]`;
@@ -925,6 +1093,7 @@
           });
 
           el.addEventListener('mouseleave', () => {
+            reticle.classList.remove('reticle-active');
             reticle.style.width = '20px';
             reticle.style.height = '20px';
             reticle.style.backgroundColor = 'transparent';
@@ -935,9 +1104,12 @@
         });
       }
 
-      // 03. Dynamic Deterministic Scroll Timecode & Bottom Track Sync
+      // 03. Scroll Timeline Scrubbing, Laser Playhead & Parallax Optical Drift
       const hudTimecode = document.getElementById('hud-timecode');
       const dockSceneState = document.getElementById('dock-scene-state');
+      const heroFrameCounter = document.getElementById('hero-frame-counter');
+      const timelineLaser = document.getElementById('timeline-laser');
+      const parallaxImages = document.querySelectorAll('.parallax-img');
       
       const sections = [
         { id: 'hero-sequence', label: 'SCENE 01 / TAKE 01' },
@@ -949,36 +1121,70 @@
       ];
 
       function formatTimecode(progress) {
-        const totalFrames = Math.floor(progress * (24 * 24));
-        const seconds = Math.floor(totalFrames / 24) + 1;
-        const frames = totalFrames % 24;
+        const totalFrames = Math.floor(progress * (24 * 60));
+        const minutes = Math.floor(totalFrames / (24 * 60));
+        const remFrames = totalFrames % (24 * 60);
+        const seconds = Math.floor(remFrames / 24);
+        const frames = remFrames % 24;
+        
+        const mStr = String(minutes).padStart(2, '0');
         const sStr = String(seconds).padStart(2, '0');
         const fStr = String(frames).padStart(2, '0');
-        return `00:00:${sStr}:${fStr}`;
+        return `00:${mStr}:${sStr}:${fStr}`;
       }
 
+      let isTicking = false;
       window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = Math.min(Math.max(scrollTop / (maxScroll || 1), 0), 1);
+        if (!isTicking) {
+          window.requestAnimationFrame(() => {
+            const scrollTop = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.min(Math.max(scrollTop / (maxScroll || 1), 0), 1);
 
-        if (hudTimecode) {
-          hudTimecode.textContent = formatTimecode(progress);
-        }
-
-        const scrollPosition = scrollTop + (window.innerHeight * 0.4);
-        for (let i = sections.length - 1; i >= 0; i--) {
-          const el = document.getElementById(sections[i].id);
-          if (el && el.offsetTop <= scrollPosition) {
-            if (dockSceneState && dockSceneState.textContent !== sections[i].label) {
-              dockSceneState.textContent = sections[i].label;
+            // Update Laser Playhead
+            if (timelineLaser) {
+              timelineLaser.style.width = `${progress * 100}%`;
             }
-            break;
-          }
+
+            // Update TC HUD
+            if (hudTimecode) {
+              hudTimecode.textContent = formatTimecode(progress);
+            }
+
+            // Update Frame Counter
+            if (heroFrameCounter) {
+              const currentFrame = String(Math.floor(progress * 8639) + 1).padStart(4, '0');
+              heroFrameCounter.textContent = `FRAME: [${currentFrame} / 8640]`;
+            }
+
+            // Update Scene / Take States
+            const scrollPosition = scrollTop + (window.innerHeight * 0.42);
+            for (let i = sections.length - 1; i >= 0; i--) {
+              const el = document.getElementById(sections[i].id);
+              if (el && el.offsetTop <= scrollPosition) {
+                if (dockSceneState && dockSceneState.textContent !== sections[i].label) {
+                  dockSceneState.textContent = sections[i].label;
+                }
+                break;
+              }
+            }
+
+            // Cinematic Parallax Translation for Viewfinder Stills
+            parallaxImages.forEach(img => {
+              const rect = img.parentElement.getBoundingClientRect();
+              if (rect.top < window.innerHeight && rect.bottom > 0) {
+                const offset = (rect.top / window.innerHeight) * 20;
+                img.style.transform = `translateY(${offset}px) scale(1.04)`;
+              }
+            });
+
+            isTicking = false;
+          });
+          isTicking = true;
         }
       }, { passive: true });
 
-      // 04. Navigation Drawer Toggle Actions
+      // 04. Slide-Out Scene Index Navigation Drawer
       const navBtn = document.getElementById('nav-btn');
       const navCloseBtn = document.getElementById('nav-close-btn');
       const navDrawer = document.getElementById('nav-drawer');
@@ -998,8 +1204,9 @@
       if (navCloseBtn) navCloseBtn.addEventListener('click', closeNav);
       navLinks.forEach(link => link.addEventListener('click', closeNav));
 
-      // 05. Deferred YouTube Video Modal Theatre
+      // 05. Theatre Modal Orchestration (Non-destructive YouTube player)
       const videoTheatre = document.getElementById('video-theatre');
+      const modalContainerCard = document.getElementById('modal-container-card');
       const iframeTarget = document.getElementById('iframe-target');
       const modalCloseBtn = document.getElementById('modal-close-btn');
       const modalVideoTitle = document.getElementById('modal-video-title');
@@ -1025,10 +1232,18 @@
 
         videoTheatre.classList.remove('opacity-0', 'pointer-events-none');
         videoTheatre.setAttribute('aria-hidden', 'false');
+        if (modalContainerCard) {
+          modalContainerCard.classList.remove('scale-95');
+          modalContainerCard.classList.add('scale-100');
+        }
         document.body.style.overflow = 'hidden';
       };
 
       function closeVideoModal() {
+        if (modalContainerCard) {
+          modalContainerCard.classList.remove('scale-100');
+          modalContainerCard.classList.add('scale-95');
+        }
         videoTheatre.classList.add('opacity-0', 'pointer-events-none');
         videoTheatre.setAttribute('aria-hidden', 'true');
         iframeTarget.innerHTML = '';
